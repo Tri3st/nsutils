@@ -12,20 +12,6 @@ const encodePassword = (password: string): string => {
 export const useAuth = () => {
   const isAuthenticated = computed(() => !!user.value)
 
-  const signUp = async (email: string, password: string) => {
-    const encodedPassword = encodePassword(password)
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password: encodedPassword,
-      options: {
-        emailRedirectTo: window.location.origin
-      }
-    })
-    
-    if (error) throw error
-    return data
-  }
-
   const signIn = async (email: string, password: string) => {
     const encodedPassword = encodePassword(password)
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -50,7 +36,7 @@ export const useAuth = () => {
     user.value = session?.user ?? null
     
     // Listen for auth changes
-    supabase.auth.onAuthStateChange((event, session) => {
+    supabase.auth.onAuthStateChange((_, _) => {
       user.value = session?.user ?? null
       loading.value = false
     })
@@ -62,7 +48,6 @@ export const useAuth = () => {
     user: computed(() => user.value),
     isAuthenticated,
     loading: computed(() => loading.value),
-    signUp,
     signIn,
     signOut,
     initialize
