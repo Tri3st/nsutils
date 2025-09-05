@@ -5,18 +5,13 @@ import type { User } from '@supabase/supabase-js'
 const user = ref<User | null>(null)
 const loading = ref(true)
 
-// Helper function to encode password to base64
-const encodePassword = (password: string): string => {
-  return btoa(password)
-}
 export const useAuth = () => {
   const isAuthenticated = computed(() => !!user.value)
 
   const signIn = async (email: string, password: string) => {
-    const encodedPassword = encodePassword(password)
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
-      password: encodedPassword
+      password
     })
     
     if (error) throw error
@@ -36,7 +31,8 @@ export const useAuth = () => {
     user.value = session?.user ?? null
     
     // Listen for auth changes
-    supabase.auth.onAuthStateChange((event: any) => {
+    supabase.auth.onAuthStateChange((event, session) => {
+      console.log(event, session);
       user.value = session?.user ?? null
       loading.value = false
     })

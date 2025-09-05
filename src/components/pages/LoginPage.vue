@@ -31,10 +31,6 @@ const handleSubmit = async () => {
   }
 }
 
-const toggleMode = () => {
-  isSignUp.value = !isSignUp.value
-  error.value = ''
-}
 </script>
 
 <template>
