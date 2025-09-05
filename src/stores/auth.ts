@@ -36,7 +36,7 @@ export const useAuth = () => {
     user.value = session?.user ?? null
     
     // Listen for auth changes
-    supabase.auth.onAuthStateChange((_: any, _:any) => {
+    supabase.auth.onAuthStateChange((event: any) => {
       user.value = session?.user ?? null
       loading.value = false
     })
