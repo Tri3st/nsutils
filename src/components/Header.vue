@@ -44,7 +44,7 @@ const userEmail = computed(() => {
         to="/logout"
         class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
         active-class="font-bold"
-        if="isAuthenticated"
+        v-if="isAuthenticated"
         >Logout {{ userEmail }}</router-link
       >
       <router-link
