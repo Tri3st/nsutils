@@ -42,7 +42,7 @@ const { user, isAuthenticated, isAdmin } = useAuthStore()
         class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
         active-class="font-bold"
         v-if="isAuthenticated"
-        >Logout {{ user.username }}</router-link
+        >Logout {{ user!.username }}</router-link
       >
       <router-link
         to="/login"
