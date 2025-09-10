@@ -36,7 +36,7 @@ const { user, isAuthenticated, isAdmin } = useAuthStore()
         active-class="font-bold"
         >Convert RAW to PNG</router-link
       >
-      <img src="crown.svg" alt="Crown" class="w-8 h-8" v-if="isAdmin"/>
+      <img src="/crown.svg" alt="Crown" class="w-8 h-8" v-if="isAdmin"/>
       <router-link
         to="/logout"
         class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
