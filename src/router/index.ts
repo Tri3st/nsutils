@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuthStore } from '@/stores/newauth'
+import { useAuthStore } from '@/stores/auth'
 import HomePage from '@/components/pages/HomePage.vue'
 import UploadXML from '@/components/pages/UploadXML.vue'
 import ViewUploads from '@/components/pages/ViewUploads.vue'

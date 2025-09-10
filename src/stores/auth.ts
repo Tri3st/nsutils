@@ -1,51 +1,86 @@
-import { ref, computed } from 'vue'
-import { supabase } from '@/lib/supabase'
-import type { User } from '@supabase/supabase-js'
+// src/stores/newauth.ts
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
+import axios from 'axios';
 
-const user = ref<User | null>(null)
-const loading = ref(true)
+export type User = {
+    username: string;
+    email: string | null;
+    role: 'A' | 'U' | 'G' | null; // 'A' for Admin, 'U' for User, 'G' for Guest
+    // Add other user fields as needed
+}
 
-export const useAuth = () => {
-  const isAuthenticated = computed(() => !!user.value)
+export const useAuthStore = defineStore('auth', () => {
+  const user = ref<User | null>(null);
+  const isLoading = ref(false);
+  const error = ref<string | null>(null);
 
-  const signIn = async (email: string, password: string) => {
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    })
-    
-    if (error) throw error
-    return data
+  const isAuthenticated = computed(() => !!user.value);
+  const isAdmin = computed(() => user.value?.role === 'A');
+
+  async function login(username: string, password: string) {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      const response = await axios.post<{ userinfo: User }>(
+        'https://localhost:8000/api/login/',
+        { username, password },
+        { withCredentials: true }
+      );
+      user.value = response.data.userinfo;
+    } catch (err) {
+      error.value = 'Login failed. Please check your credentials.';
+      user.value = null;
+      throw err;
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  const signOut = async () => {
-    const { error } = await supabase.auth.signOut()
-    if (error) throw error
+  async function logout() {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      await axios.post(
+        'https://localhost:8000/api/logout/',
+        {},
+        { withCredentials: true }
+      );
+      user.value = null;
+    } catch (err) {
+      error.value = 'Logout failed. Please try again.';
+      throw err;
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  const initialize = async () => {
-    loading.value = true
-    
-    // Get initial session
-    const { data: { session } } = await supabase.auth.getSession()
-    user.value = session?.user ?? null
-    
-    // Listen for auth changes
-    supabase.auth.onAuthStateChange((event, session) => {
-      console.log(event, session);
-      user.value = session?.user ?? null
-      loading.value = false
-    })
-    
-    loading.value = false
+  async function checkAuth() {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      const response = await axios.get<{ userinfo: User | null }>(
+        'https://localhost:8000/api/userinfo/',
+        { withCredentials: true }
+      );
+      user.value = response.data.userinfo || null;
+    } catch (err) {
+      error.value = 'Failed to fetch user info.';
+      user.value = null;
+      throw err;
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   return {
-    user: computed(() => user.value),
+    user,
+    isLoading,
+    error,
     isAuthenticated,
-    loading: computed(() => loading.value),
-    signIn,
-    signOut,
-    initialize
-  }
-}
+    isAdmin,
+    login,
+    logout,
+    checkAuth
+  };
+});
