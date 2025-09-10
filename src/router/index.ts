@@ -22,7 +22,7 @@ const router = createRouter({
 })
 
 // Auth guard
-router.beforeEach(async (to) => {
+router.beforeEach(async (to: any) => {
   const { isAuthenticated } = useAuthStore()
   
   // Allow access to login page
@@ -31,7 +31,7 @@ router.beforeEach(async (to) => {
   }
   
   // Redirect to login if not authenticated
-  if (!isAuthenticated.value) {
+  if (!isAuthenticated) {
     return { name: 'Login' }
   }
   
