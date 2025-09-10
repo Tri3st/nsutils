@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 
-const { login } = useAuthStore ()
+const { login, isLoading } = useAuthStore ()
 const router = useRouter()
 
 const email = ref<string>('')
@@ -33,6 +33,9 @@ const handleSubmit = async () => {
 </script>
 
 <template>
+  <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50">
+    <span>Loading...</span>
+  </div>
   <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
       <div>

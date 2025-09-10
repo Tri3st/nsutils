@@ -6,11 +6,7 @@ const { user, isAuthenticated, isAdmin } = useAuthStore()
 </script>
 
 <template>
-  <div v-if="user.isLoading" class="text-center py-8">
-    <h1 class="text-2xl font-bold text-gray-900 mb-4">Loading user info...</h1>
-    <p class="text-gray-600">Please wait</p>
-  </div>
-  <nav class="bg-yellow-400 flex items-center justify-between px-6 py-2" v-else>
+  <nav class="bg-yellow-400 flex items-center justify-between px-6 py-2">
     <!-- Left: NS Logo -->
     <img src="/nslogo.svg" alt="NS Logo" class="h-8 w-auto" />
 

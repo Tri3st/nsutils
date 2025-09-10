@@ -1,6 +1,9 @@
 <script setup lang="ts">
 
 import {computed, ref} from "vue";
+import { useAuthStore } from '@/stores/auth'
+
+const { isLoading } = useAuthStore();
 
 type MimeGuess = {
   mime: string
@@ -171,6 +174,9 @@ async function uploadImage() {
 </script>
 
 <template>
+  <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50">
+    <span>Loading...</span>
+  </div>
   <h1 class="text-3xl font-bold text-center mb-4">ConvertRaw</h1>
   <form @submit.prevent="onSubmitConvert" class="space-y-6">
     <textarea
