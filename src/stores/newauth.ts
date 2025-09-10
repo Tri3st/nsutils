@@ -1,22 +1,28 @@
-// src/stores/auth.js
+// src/stores/newauth.ts
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 
-type User {
+export type User = {
     username: string;
     email: string | null;
-    role: string | null;
+    role: 'A' | 'U' | 'G' | null; // 'A' for Admin, 'U' for User, 'G' for Guest
     // Add other user fields as needed
 }
 
+export type State = {
+    user: User | null;
+    isLoading: boolean;
+    error: string | null;
+}
+
 export const useAuthStore = defineStore('auth', {
-  state: () => ({
+  state: (): State => ({
     user: null,   // you can store user info here if needed
     isLoading: false,
     error: null,
   }),
   getters: {
-    isAuthenticated: (state: boolean) => !!state.user,
+    isAuthenticated: (state: State): boolean => !!state.user,
   },
   actions: {
     async login(username: string, password: string) {
@@ -25,15 +31,13 @@ export const useAuthStore = defineStore('auth', {
       try {
         // Send credentials to your Django REST login endpoint
         // Make sure to send cookies for session handling
-        const response = await axios.post(
-          'http://localhost:8000/api/login',
+        const response = await axios.post<{ userinfo: User }>(
+          'http://localhost:8000/api/login/',
           { username, password },
           { withCredentials: true }
         )
         
-        // Assuming successful login returns user info, adapt if needed
-        this.user = response.data.user || { username }
-        
+        this.user = response.data.userinfo
       } catch (err) {
         this.error = 'Invalid username or password'
         this.user = null
@@ -46,8 +50,7 @@ export const useAuthStore = defineStore('auth', {
       this.isLoading = true
       this.error = null
       try {
-        // Assuming you have a /api/logout endpoint that clears session
-        await axios.post('http://localhost:8000/api/logout', {}, { withCredentials: true })
+        await axios.post('http://localhost:8000/api/logout/', {}, { withCredentials: true })
         this.user = null
       } catch (err) {
         this.error = 'Logout failed'
@@ -56,12 +59,15 @@ export const useAuthStore = defineStore('auth', {
       }
     },
     async checkAuth() {
-      // You can add a session check e.g. a /api/user or /api/session endpoint to verify session
+      this.isLoading = true
+      this.error = null
       try {
-        const response = await axios.get('http://localhost:8000/api/session', { withCredentials: true })
-        this.user = response.data.user || null
-      } catch {
+        const response = await axios.get<{ userinfo: User }>('http://localhost:8000/api/userinfo/', { withCredentials: true })
+        this.user = response.data.userinfo || null
+      } catch (err){
         this.user = null
+      } finally {
+        this.isLoading = false
       }
     }
   }

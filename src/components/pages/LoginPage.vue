@@ -6,11 +6,10 @@ import { useRouter } from 'vue-router'
 const { login } = useAuthStore ()
 const router = useRouter()
 
-const email = ref('')
-const password = ref('')
-const isSignUp = ref(false)
-const error = ref('')
-const loading = ref(false)
+const email = ref<string>('')
+const password = ref<string>('')
+const error = ref<string>('')
+const loading = ref<boolean>(false)
 
 const handleSubmit = async () => {
   if (!email.value || !password.value) {
@@ -38,9 +37,6 @@ const handleSubmit = async () => {
     <div class="max-w-md w-full space-y-8">
       <div>
         <img class="mx-auto h-12 w-auto" src="/nslogo.svg" alt="NS Logo" />
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          {{ isSignUp ? 'Create your account' : 'Sign in to your account' }}
-        </h2>
       </div>
       <form class="mt-8 space-y-6" @submit.prevent="handleSubmit">
         <div class="rounded-md shadow-sm -space-y-px">
