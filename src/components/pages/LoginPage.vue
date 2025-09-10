@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useAuth } from '@/stores/auth'
+import { useAuthStore } from '@/stores/newauth'
 import { useRouter } from 'vue-router'
 
-const { signIn } = useAuth()
+const { login } = useAuthStore ()
 const router = useRouter()
 
 const email = ref('')
@@ -22,7 +22,7 @@ const handleSubmit = async () => {
   error.value = ''
 
   try {
-    await signIn(email.value, password.value)
+    await login(email.value, password.value)
     router.push('/')
   } catch (err: any) {
     error.value = err.message
