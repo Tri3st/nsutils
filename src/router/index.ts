@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useAuth } from '@/stores/auth'
+import { useAuthStore } from '@/stores/newauth'
 import HomePage from '@/components/pages/HomePage.vue'
 import UploadXML from '@/components/pages/UploadXML.vue'
 import ViewUploads from '@/components/pages/ViewUploads.vue'
@@ -23,7 +23,7 @@ const router = createRouter({
 
 // Auth guard
 router.beforeEach(async (to) => {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated } = useAuthStore()
   
   // Allow access to login page
   if (to.name === 'Login') {
