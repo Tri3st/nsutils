@@ -9,7 +9,8 @@ const app = createApp(App);
 app.use(router);
 
 // Initialize auth before mounting
-const { initialize } = useAuthStore()
-initialize().then(() => {
-  app.mount('#app');
-})
+const authStore = useAuthStore();
+
+authStore.checkAuth();
+
+app.mount('#app');

@@ -3,12 +3,12 @@ import { onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth.ts'
 import { useRouter } from 'vue-router'
 
-const { signOut } = useAuthStore()
+const { logout } = useAuthStore()
 const router = useRouter()
 
 onMounted(async () => {
   try {
-    await signOut()
+    await logout()
     setTimeout(() => {
       router.push('/login')
     }, 2000)

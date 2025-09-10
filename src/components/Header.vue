@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 
 const { user, isAuthenticated, isAdmin } = useAuthStore()
 
-const userEmail = computed(() => {
-  return user.value?.email?.split('@')[0] || 'user'
-})
 </script>
 
 <template>
@@ -46,7 +42,7 @@ const userEmail = computed(() => {
         class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
         active-class="font-bold"
         v-if="isAuthenticated"
-        >Logout {{ userEmail }}</router-link
+        >Logout {{ user.username }}</router-link
       >
       <router-link
         to="/login"
