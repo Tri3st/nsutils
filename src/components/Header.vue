@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { useAuth } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth'
 
-const { user, isAuthenticated } = useAuth()
+const { user, isAuthenticated, isAdmin } = useAuthStore()
 
 const userEmail = computed(() => {
   return user.value?.email?.split('@')[0] || 'user'
@@ -40,6 +40,7 @@ const userEmail = computed(() => {
         active-class="font-bold"
         >Convert RAW to PNG</router-link
       >
+      <img src="crown.svg" alt="Crown" class="w-8 h-8" v-if="isAdmin"/>
       <router-link
         to="/logout"
         class="text-blue-700 underline hover:text-blue-900 underline-offset-2"

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
-import { useAuth } from '@/stores/auth.ts'
+import { useAuthStore } from '@/stores/auth.ts'
 import { useRouter } from 'vue-router'
 
-const { signOut } = useAuth()
+const { signOut } = useAuthStore()
 const router = useRouter()
 
 onMounted(async () => {
