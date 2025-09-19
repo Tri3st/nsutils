@@ -3,16 +3,16 @@ import { ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
 
-const { login, isLoading } = useAuthStore ()
+const { login } = useAuthStore ()
 const router = useRouter()
 
-const email = ref<string>('')
+const username = ref<string>('')
 const password = ref<string>('')
 const error = ref<string>('')
 const loading = ref<boolean>(false)
 
 const handleSubmit = async () => {
-  if (!email.value || !password.value) {
+  if (!username.value || !password.value) {
     error.value = 'Please fill in all fields'
     return
   }
@@ -21,7 +21,7 @@ const handleSubmit = async () => {
   error.value = ''
 
   try {
-    await login(email.value, password.value)
+    await login(username.value, password.value)
     router.push('/')
   } catch (err: any) {
     error.value = err.message
@@ -33,9 +33,7 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <div v-if="isLoading" class="fixed inset-0 flex items-center justify-center bg-white bg-opacity-80 z-50">
-    <span>Loading...</span>
-  </div>
+
   <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full space-y-8">
       <div>
@@ -44,16 +42,16 @@ const handleSubmit = async () => {
       <form class="mt-8 space-y-6" @submit.prevent="handleSubmit">
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
-            <label for="email" class="sr-only">Email address</label>
+            <label for="username" class="sr-only">Username</label>
             <input
-              id="email"
-              v-model="email"
-              name="email"
-              type="email"
-              autocomplete="email"
+              id="username"
+              v-model="username"
+              name="username"
+              type="text"
+              autocomplete="username"
               required
               class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Email address"
+              placeholder="Username"
             />
           </div>
           <div>

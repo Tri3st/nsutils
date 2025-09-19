@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null;
     try {
       const response = await axios.post<{ userinfo: User }>(
-        'https://localhost:8000/api/login/',
+        'http://localhost:8000/api/login/',
         { username, password },
         { withCredentials: true }
       );
@@ -42,7 +42,7 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null;
     try {
       await axios.post(
-        'https://localhost:8000/api/logout/',
+        'http://localhost:8000/api/logout/',
         {},
         { withCredentials: true }
       );
@@ -60,7 +60,7 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null;
     try {
       const response = await axios.get<{ userinfo: User | null }>(
-        'https://localhost:8000/api/userinfo/',
+        'http://localhost:8000/api/userinfo/',
         { withCredentials: true }
       );
       user.value = response.data.userinfo || null;
