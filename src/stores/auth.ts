@@ -1,7 +1,7 @@
 // src/stores/newauth.ts
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
-import axios from 'axios';
+import { api } from "@/api.ts";
 
 export type User = {
     username: string;
@@ -22,16 +22,14 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      const response = await axios.post<{ userinfo: User }>(
-        'http://localhost:8000/api/login/',
-        { username, password },
-        { withCredentials: true }
+      const response = await api.post<{ userinfo: User }>(
+        '/login/',
+        { username, password }
       );
       user.value = response.data.userinfo;
     } catch (err) {
       error.value = 'Login failed. Please check your credentials.';
       user.value = null;
-      throw err;
     } finally {
       isLoading.value = false;
     }
@@ -41,15 +39,13 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      await axios.post(
-        'http://localhost:8000/api/logout/',
-        {},
-        { withCredentials: true }
+      await api.post(
+        '/logout/',
+        {}
       );
       user.value = null;
     } catch (err) {
       error.value = 'Logout failed. Please try again.';
-      throw err;
     } finally {
       isLoading.value = false;
     }
@@ -59,15 +55,13 @@ export const useAuthStore = defineStore('auth', () => {
     isLoading.value = true;
     error.value = null;
     try {
-      const response = await axios.get<{ userinfo: User | null }>(
-        'http://localhost:8000/api/userinfo/',
-        { withCredentials: true }
+      const response = await api.get<{ userinfo: User | null }>(
+        '/userinfo/'
       );
       user.value = response.data.userinfo || null;
     } catch (err) {
       error.value = 'Failed to fetch user info.';
       user.value = null;
-      throw err;
     } finally {
       isLoading.value = false;
     }
