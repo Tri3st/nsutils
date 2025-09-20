@@ -5,57 +5,79 @@ import { storeToRefs } from 'pinia';
 const authStore = useAuthStore();
 const { user, isAuthenticated, isAdmin } = storeToRefs(authStore);
 
+const normalButton = "inline-flex items-center justify-center px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold" +
+    " hadow-sm hover:bg-blue-700 transition";
+const loginButton = "inline-flex items-center justify-center px-4 py-2 rounded-xl bg-green-600 text-white font-semibold" +
+    " shadow-sm hover:bg-green-700 transition";
+const logoutButton = "inline-flex items-center justify-center px-4 py-2 rounded-xl bg-red-600 text-white font-semibold" +
+    " shadow-sm hover:bg-red-700 transition";
+const normalActiveButton = "ring-2 ring-blue-800";
+const loginActiveButton = "ring-2 ring-green-800";
+const logoutActiveButton = "ring-2 ring-red-800";
+
 </script>
 
 <template>
-  <nav class="bg-yellow-400 flex items-center justify-between px-6 py-2">
+  <nav class="bg-yellow-400 flex items-center justify-between px-6 py-2 shadow-md">
     <!-- Left: NS Logo -->
     <img src="/nslogo.svg" alt="NS Logo" class="h-8 w-auto" />
 
     <!-- Center: Navigation Buttons -->
-    <div class="flex space-x-8 text-sm">
+    <div class="flex space-x-4 text-sm">
       <router-link
         to="/"
-        class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
-        active-class="font-bold"
+        :class="normalButton"
+        :active-class="normalActiveButton"
         >Home</router-link
       >
       <router-link
         to="/upload-xml"
-        class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
-        active-class="font-bold"
+        :class="normalButton"
+        :active-class="normalActiveButton"
         >Upload XML Files</router-link
       >
       <router-link
         to="/view-uploads"
-        class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
-        active-class="font-bold"
+        :class="normalButton"
+        :active-class="normalActiveButton"
         >View uploads</router-link
       >
       <router-link
         to="/convert-raw"
-        class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
-        active-class="font-bold"
+        :class="normalButton"
+        :active-class="normalActiveButton"
         >Convert RAW to PNG</router-link
       >
-      <img src="/crown.svg" alt="Crown" class="w-8 h-8" v-if="isAdmin"/>
-      <router-link
-        to="/logout"
-        class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
-        active-class="font-bold"
-        v-if="isAuthenticated"
-        >Logout {{ user!.username }}</router-link
-      >
-      <router-link
-        to="/login"
-        class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
-        active-class="font-bold"
-        v-else
-        >Login</router-link
-      >
+
+      <!-- Right: Auth Section -->
+      <div class="flex items-center space-x-3">
+        <!-- Show when logged in -->
+        <template v-if="isAuthenticated">
+          <!-- Username + Crown if ADMIN -->
+          <div class="flex items-center space-x-1 text-blue-900 font-semibold">
+            <span>{{ user!.username }}</span>
+            <img src="/crown.svg" alt="Admin" class="w-5 h-5" v-if="isAdmin" />
+          </div>
+          <router-link
+              to="/logout"
+              :class="logoutButton"
+              :active-class="logoutActiveButton"
+          >Logout</router-link>
+        </template>
+
+        <!-- Show when logged out -->
+        <template v-else>
+          <router-link
+              to="/login"
+              :class="loginButton"
+              :active-class="loginActiveButton"
+          >Login</router-link>
+        </template>
+
+        <!-- Banner Image -->
+        <img src="/new_banner_small.jpg" alt="Banner" class="h-12 w-auto" />
+      </div>
     </div>
 
-    <!-- Right: Banner Image -->
-    <img src="/new_banner_small.jpg" alt="Banner" class="h-12 w-auto" />
   </nav>
 </template>
