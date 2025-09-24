@@ -55,8 +55,15 @@ const logoutActiveButton = "ring-2 ring-red-800";
         <template v-if="isAuthenticated">
           <!-- Username + Crown if ADMIN -->
           <div class="flex items-center space-x-1 text-blue-900 font-semibold">
-            <span>{{ user!.username }}</span>
-            <img src="/crown.svg" alt="Admin" class="w-5 h-5" v-if="isAdmin" />
+            <!-- Avatar circle -->
+    <div
+      class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold uppercase"
+      v-if="user && user.username"
+      :title="user.username"
+    >
+      {{ user.username.charAt(0) }}
+    </div>
+	    <img src="/crown.svg" alt="Admin" class="w-5 h-5" v-if="isAdmin" />
           </div>
           <router-link
               to="/logout"
