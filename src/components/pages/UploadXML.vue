@@ -3,11 +3,19 @@ import { ref } from 'vue';
 import { usePhotoStore, ExtractedImage } from '@/stores/photoStore';
 
 const photoStore = usePhotoStore();
+
 const selectedImage  = ref<ExtractedImage | null>(null);
 const selectedIds = ref<number[]>([]);
 
 async function saveSelectedImages() {
-  // TODO !! See chatNS
+  if (!selectedIds.value.length) return;
+
+  // implement your save logic here or in store if needed
+  // For now, just log the IDs
+  console.log('Saving selected images with ids: ', selectedIds.value);
+
+  // Send images to API to save.
+
 }
 
 async function onFileSelected(event: Event){
@@ -18,9 +26,9 @@ async function onFileSelected(event: Event){
   photoStore.uploadFotosXml(file);
 }
 
-function viewImage(image: ExtractedImage) {
-  selectedImage.value = image;
-}
+// function viewImage(image: ExtractedImage) {
+//  selectedImage.value = image;
+// }
 
 </script>
 
@@ -31,11 +39,11 @@ function viewImage(image: ExtractedImage) {
   <div class="p-4">
     <input type="file"@change="onFileSelected" accept=".xml" />
 
-    <div v-if="loading" class="mt-2 text-blue-600">Uploading and processing ...</div>
+    <div v-if="photoStore.loading" class="mt-2 text-blue-600">Uploading and processing ...</div>
 
-    <div v-if="error" class="mt-2 text-red-600">{{ error }}</div>
+    <div v-if="photoStore.error" class="mt-2 text-red-600">{{ photoStore.error }}</div>
 
-    <div class="grid grid-cols-4 gap-4 mt-4" v-if="photos.length" >
+    <div class="grid grid-cols-4 gap-4 mt-4" v-if="photoStore.images.length" >
       <div v-for="image in photoStore.images" :key="image.id" class="border rounded p-2">
 	<input 
 	  type="checkbox"
@@ -48,7 +56,7 @@ function viewImage(image: ExtractedImage) {
 	  class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
 	  :disabled="!selectedIds.length || photoStore.saving"
 	  @click="saveSelectedImages"
-	>Save selected ({{ slectedIds.length }})</button>
+	>Save selected ({{ selectedIds.length }})</button>
 	<div v-if="photoStore.saving" class="mt-2 text-blue-600">Saving...</div>
       </div>
     </div>
@@ -67,7 +75,7 @@ function viewImage(image: ExtractedImage) {
         class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
 	@click="selectedImage = null"
       >Close</button>
-    <div>
-  <div>
+    </div>
+  </div>
 	
 </template>
