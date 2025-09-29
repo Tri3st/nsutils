@@ -4,11 +4,6 @@ import App from './App.vue'
 import router from './router/index';
 import { createPinia } from "pinia";
 import { useAuthStore } from '@/stores/auth'
-import axios from "axios";
-
-// Setup the axios defaults for CSRF protection
-axios.defaults.xsrfCookieName = 'csrftoken';
-axios.defaults.xsrfHeaderName = 'X-CSRFToken';
 
 // CReate the app
 const app = createApp(App);
