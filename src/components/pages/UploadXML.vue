@@ -1,11 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { usePhotoStore, ExtractedImage } from '@/stores/photoStore';
 
 const photoStore = usePhotoStore();
 
 const selectedImage  = ref<ExtractedImage | null>(null);
 const selectedIds = ref<number[]>([]);
+const uploadType = ref<'xml' | 'zip'>('xml');
+const selectedFile = ref<File | null>(null);
+
+const acceptTypes = computed(() => {
+  return uploadType.value === 'xml' ? '.xml' : '.zip';
+});
 
 async function saveSelectedImages() {
   if (!selectedIds.value.length) return;
@@ -18,12 +24,29 @@ async function saveSelectedImages() {
 
 }
 
-async function onFileSelected(event: Event){
+function onFileChanged(event: Event){
+  console.log("onFileChanged triggered");
   const target = event.target as HTMLInputElement;
-  if (!target.files?.length) return
+  if (target.files?.length) {
+    console.log("File selected:", target.files[0].name);
+    selectedFile.value = target.files[0];
+  } else {
+    console.log("No file selected or file selection cancelled.");
+    selectedFile.value = null;
+  }
+  console.log("selectedFile.value is now:", selectedFile.value);
+}
 
-  const file = target.files[0]
-  photoStore.uploadFotosXml(file);
+async function uploadFile() {
+  if (!selectedFile.value) return;
+
+  const file = selectedFile.value;
+  if (uploadType.value === 'xml') {
+    photoStore.uploadFotos(file);
+  } else {
+    // Assuming you will create this method in your store
+    // photoStore.uploadFotosZip(file); 
+  }
 }
 
 // function viewImage(image: ExtractedImage) {
@@ -37,7 +60,27 @@ async function onFileSelected(event: Event){
   <h1>UploadXml</h1>
   
   <div class="p-4">
-    <input type="file"@change="onFileSelected" accept=".xml" />
+  
+    <div class="flex items-center space-x-4 mb-4">
+      <label>
+        <input type="radio" value="xml" v-model="uploadType" name="uploadType" />
+        XML File
+      </label>
+      <label>
+        <input type="radio" value="zip" v-model="uploadType" name="uploadType" />
+        ZIP File
+      </label>
+    </div>
+    
+    <input type="file" @change="onFileChanged" :accept="acceptTypes" />
+    <button
+      v-if="selectedFile"
+      @click="uploadFile"
+      class="ml-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      :disabled="photoStore.loading"
+    >
+      Upload
+    </button>
 
     <div v-if="photoStore.loading" class="mt-2 text-blue-600">Uploading and processing ...</div>
 
@@ -66,10 +109,10 @@ async function onFileSelected(event: Event){
   <!-- Image Modal -->
   <div 
     v-if="selectedImage"
-    class="fixed inset-0 bg-black bg-opacity-70 flex items-center jistify-center z-50"
+    class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"
     @click.self="selectedImage = null"
   >
-    <div class="bh-white rounded p-4 max-w-md max-h-full overflow-auto">
+    <div class="bg-white rounded p-4 max-w-md max-h-full overflow-auto">
       <img :src="selectedImage.url" alt="Selected" class="max-w-full max-h-[80vh]" />
       <button
         class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"

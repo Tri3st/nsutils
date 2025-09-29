@@ -18,17 +18,18 @@ export const usePhotoStore = defineStore('photoStore', () => {
     error.value = null;
   }
 
-  async function uploadFotosXml(file: File) {
+  async function uploadFotos(file: File, type: 'xml' | 'zip') {
     reset();
+    if (!file || !type || type !== 'zip' && type !== 'xml') return;
     loading.value = true;
     try {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await api.post<ExtractedImage[]>('/upload-fotos-xml/', formData, {
+      const response = await api.post<ExtractedImage[]>(`/upload-fotos-${type}/`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
-	},
+	    },
       })
 
       images.value = response.data;
@@ -66,7 +67,7 @@ export const usePhotoStore = defineStore('photoStore', () => {
     loading,
     saving,
     error,
-    uploadFotosXml,
+    uploadFotos,
     saveSelectedImages,
     reset
   }
