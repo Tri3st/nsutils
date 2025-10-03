@@ -18,7 +18,7 @@ export const usePhotoStore = defineStore('photoStore', () => {
     error.value = null;
   }
 
-  async function uploadFotos(file: File, type: 'xml' | 'zip', zippassw?: string) {
+  async function uploadFotos(file: File, type: 'xml' | 'zip', zippassw: string | undefined) {
     reset();
     if (!file || !type || type !== 'zip' && type !== 'xml') return;
     loading.value = true;
@@ -26,10 +26,14 @@ export const usePhotoStore = defineStore('photoStore', () => {
       const formData = new FormData();
       formData.append('file', file);
       if (type === 'zip' && zippassw) {
-          formData.append('zippassw', zippassw);
+          formData.append('zip-passw', zippassw);
       }
 
-      const response = await api.post<ExtractedImage[]>(`/upload-fotos/`, formData)
+      const response = await api.post<ExtractedImage[]>(`/upload-fotos/`, formData, {
+          headers: {
+              'Content-Type': 'multipart/form-data'
+          }
+      })
 
       images.value = response.data;
     } catch (e: any) {

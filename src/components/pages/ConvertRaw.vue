@@ -16,6 +16,7 @@ const error = ref<string>('');
 const isConverting = ref<boolean>(false);
 const isUploading = ref<boolean>(false);
 const isDownloading = ref<boolean>(false);
+const mime = ref<string>('');
 
 const fileName = ref<string>('image');
 
@@ -41,8 +42,6 @@ function onSubmitConvert() {
 
 }
 
-
-
 // Normalize input into a proper data URL for an image
 function normalizeToDataUrl(input: string): string {
   if (!input) throw new Error('Input is empty.')
@@ -65,6 +64,7 @@ function normalizeToDataUrl(input: string): string {
   }
 
   const guess = guessMimeFromBase64(cleaned)
+  mime.value = guess.mime;
   return `data:${guess.mime};base64,${cleaned}`
 }
 
@@ -150,15 +150,6 @@ async function uploadImage() {
     const { blob } = dataUrlToBlob(dataUrl.value)
     console.log("Blob : ", blob);
 
-    // // Example: Upload to Supabase Storage (uncomment if using Supabase)
-    // const bucket = 'images' // Change to your bucket name
-    // const path = suggestedFileName.value
-    // const { error: upErr } = await supabase.storage.from(bucket).upload(path, blob, {
-    //   upsert: true,
-    //   contentType: blob.type,
-    // })
-    // if (upErr) throw upErr
-
     // Placeholder: if not using Supabase yet, simulate success.
     await new Promise((res) => setTimeout(res, 500))
     // Success feedback could be improved with a toast/notification
@@ -212,6 +203,7 @@ async function uploadImage() {
 
   <div class="space-y-3" v-if="dataUrl">
     <h3 class="font-semibold">Preview</h3>
+    <h4 class="font-normal text-lg border rounded p-2">Type: {{ mime }}</h4>
     <div class="border rounded p-2 in;ine-block max-w-full">
       <img :src="dataUrl" alt="Converted Preview" class="max-w-full h-auto" />
     </div>
