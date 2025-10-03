@@ -8,6 +8,7 @@ const selectedImage  = ref<ExtractedImage | null>(null);
 const selectedIds = ref<number[]>([]);
 const uploadType = ref<'xml' | 'zip'>('xml');
 const selectedFile = ref<File | null>(null);
+const zipPassword = ref<string>('');
 
 const acceptTypes = computed(() => {
   return uploadType.value === 'xml' ? '.xml' : '.zip';
@@ -41,11 +42,18 @@ async function uploadFile() {
   if (!selectedFile.value) return;
 
   const file = selectedFile.value;
-  if (uploadType.value === 'xml') {
-    photoStore.uploadFotos(file);
+  if (uploadType.value === 'xml' || uploadType.value === 'zip') {
+    if (uploadType.value === 'zip' && !zipPassword.value) {
+      console.warn('ZIP password is required for ZIP files');
+      return;
+    }
+    await photoStore.uploadFotos(
+        file,
+        uploadType.value,
+        uploadType.value === 'zip' ? zipPassword.value : undefined
+    );
   } else {
-    // Assuming you will create this method in your store
-    // photoStore.uploadFotosZip(file); 
+    // give an error
   }
 }
 
@@ -70,6 +78,18 @@ async function uploadFile() {
         <input type="radio" value="zip" v-model="uploadType" name="uploadType" />
         ZIP File
       </label>
+    </div>
+
+    <div class="mb-4" v-if="uploadType === 'zip'">
+      <label class="block text-sm font-medium text-gray-700 mb-1">ZIP Password</label>
+      <input
+          type="text"
+          v-model="zipPassword"
+          placeholder="Enter ZIP password"
+          class="border rounded px-3 py-2 w-full"
+          autocomplete="off"
+      />
+      <p class="text-xs text-gray-500 mt-1">A password is required to extract ZIP files.</p>
     </div>
     
     <input type="file" @change="onFileChanged" :accept="acceptTypes" />
@@ -113,7 +133,7 @@ async function uploadFile() {
     @click.self="selectedImage = null"
   >
     <div class="bg-white rounded p-4 max-w-md max-h-full overflow-auto">
-      <img :src="selectedImage.url" alt="Selected" class="max-w-full max-h-[80vh]" />
+      <img :src="selectedImage!.url" alt="Selected" class="max-w-full max-h-[80vh]" />
       <button
         class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
 	@click="selectedImage = null"

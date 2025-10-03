@@ -18,23 +18,22 @@ export const usePhotoStore = defineStore('photoStore', () => {
     error.value = null;
   }
 
-  async function uploadFotos(file: File, type: 'xml' | 'zip') {
+  async function uploadFotos(file: File, type: 'xml' | 'zip', zippassw?: string) {
     reset();
     if (!file || !type || type !== 'zip' && type !== 'xml') return;
     loading.value = true;
     try {
       const formData = new FormData();
       formData.append('file', file);
+      if (type === 'zip' && zippassw) {
+          formData.append('zippassw', zippassw);
+      }
 
-      const response = await api.post<ExtractedImage[]>(`/upload-fotos-${type}/`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-	    },
-      })
+      const response = await api.post<ExtractedImage[]>(`/upload-fotos/`, formData)
 
       images.value = response.data;
     } catch (e: any) {
-      error.value = 'Failed to upload or process XML file.'
+      error.value = 'Failed to upload or process XML/ZIP file.'
       console.error(e);
     } finally {
       loading.value = false;
