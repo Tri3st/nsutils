@@ -8,11 +8,25 @@ const selectedImage  = ref<ExtractedImage | null>(null);
 const selectedIds = ref<number[]>([]);
 const uploadType = ref<'xml' | 'zip'>('xml');
 const selectedFile = ref<File | null>(null);
-const zipPassword = ref('');
+const zipPassword = ref<string>('');
+const privatized = ref<boolean>(false);
 
 const acceptTypes = computed(() => {
   return uploadType.value === 'xml' ? '.xml' : '.zip';
 });
+
+function togglePrivatized(){
+  privatized.value = !privatized.value;
+}
+
+const isPrivatized = computed(() => {
+  return privatized.value;
+})
+
+const viewSelectedFile = computed(() => {
+  if (!selectedFile.value) return null;
+  return URL.createObjectURL(selectedFile.value);
+})
 
 async function saveSelectedImages() {
   if (!selectedIds.value.length) return;
@@ -23,6 +37,15 @@ async function saveSelectedImages() {
 
   // Send images to API to save.
 
+}
+
+function clearAll(){
+  selectedIds.value = [];
+  photoStore.reset();
+  selectedFile.value = null;
+  zipPassword.value = '';
+  selectedImage.value = null;
+  uploadType.value = 'xml';
 }
 
 function onFileChanged(event: Event){
@@ -93,7 +116,7 @@ async function uploadFile() {
     
     <input type="file" @change="onFileChanged" :accept="acceptTypes" />
     <button
-      v-if="selectedFile"
+      v-if="viewSelectedFile"
       @click="uploadFile"
       class="ml-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
       :disabled="photoStore.loading"
@@ -106,22 +129,42 @@ async function uploadFile() {
     <div v-if="photoStore.error" class="mt-2 text-red-600">{{ photoStore.error }}</div>
 
     <div class="grid grid-cols-4 gap-4 mt-4" v-if="photoStore.images.length" >
+      <div v-if="photoStore.saving" class="mt-2 text-blue-600">Saving...</div>
       <div v-for="image in photoStore.images" :key="image.id" class="border rounded p-2">
-	<input 
-	  type="checkbox"
-	  :value="image.id"
-	  v-model="selectedIds"
-	  class="mb-2"
-	/>
+        <input
+          type="checkbox"
+          :value="image.id"
+          v-model="selectedIds"
+          class="mb-2"
+        />
         <img :src="image.url" alt="Extracted photo" class="w-full h-auto" />
-        <button 
-	  class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-	  :disabled="!selectedIds.length || photoStore.saving"
-	  @click="saveSelectedImages"
-	>Save selected ({{ selectedIds.length }})</button>
-	<div v-if="photoStore.saving" class="mt-2 text-blue-600">Saving...</div>
+        <div class="space-y-1 text-center">
+          <div class="font-semibold text-gray-900" v-if="!privatized">
+            {{ image.medewerker_number }}
+          </div>
+          <div class="flex justify-center gap-2 text-sm text-gray-500">
+            <div>{{ image.image_type }}</div>
+            <div>•</div>
+            <div>{{ (image.image_size / 1024).toFixed(1) }} KB</div>
+          </div>
+        </div>
+
       </div>
     </div>
+
+    <button
+        class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        @click="togglePrivatized"
+    >{{ isPrivatized ? "Unprivatize" : "Privatize" }}</button>
+    <button
+        class="mt-4 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
+        @click="clearAll"
+    >Clear</button>
+    <button
+        class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        :disabled="viewSelectedFile && selectedIds.length === 0 || photoStore.saving"
+        @click="saveSelectedImages"
+    >Save selected ({{ selectedIds.length }})</button>
   </div>
 
 
@@ -135,7 +178,7 @@ async function uploadFile() {
       <img :src="selectedImage.url" alt="Selected" class="max-w-full max-h-[80vh]" />
       <button
         class="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-	@click="selectedImage = null"
+	      @click="selectedImage = null"
       >Close</button>
     </div>
   </div>

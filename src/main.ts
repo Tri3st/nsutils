@@ -19,9 +19,9 @@ app.use(pinia);
 const authStore = useAuthStore();
 
 // Check auth on app mount
-authStore.checkAuth().catch(() => {
-    // Silently fail, the user just isnt logged in
+authStore.checkAuth().finally(() => {
+    // Mount the app
+    app.mount('#app');
 });
 
-// Mount the app
-app.mount('#app');
+

@@ -16,6 +16,8 @@ export const usePhotoStore = defineStore('photoStore', () => {
   function reset() {
     images.value = [];
     error.value = null;
+    loading.value = false;
+    saving.value = false;
   }
 
   async function uploadFotos(file: File, type: 'xml' | 'zip', zippassw: string | undefined) {
