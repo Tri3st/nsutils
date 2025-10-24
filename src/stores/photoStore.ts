@@ -5,6 +5,9 @@ import { ref } from 'vue';
 export interface ExtractedImage {
   id: number;
   url: string;
+  image_size: number;
+  image_type: string;
+  medewerker_number: string;
 }
 
 export const usePhotoStore = defineStore('photoStore', () => {
