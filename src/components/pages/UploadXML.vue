@@ -46,6 +46,9 @@ function clearAll(){
   zipPassword.value = '';
   selectedImage.value = null;
   uploadType.value = 'xml';
+  if (unputFileRef.value) {
+    inputFileRef.value.value = '';
+  }
 }
 
 function onFileChanged(event: Event){
@@ -114,7 +117,7 @@ async function uploadFile() {
       />
     </div>
     
-    <input type="file" @change="onFileChanged" :accept="acceptTypes" />
+    <input type="file" @change="onFileChanged" :accept="acceptTypes" ref="inputFileRef" />
     <button
       v-if="viewSelectedFile"
       @click="uploadFile"
