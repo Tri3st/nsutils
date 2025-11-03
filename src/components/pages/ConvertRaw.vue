@@ -173,7 +173,7 @@ async function uploadImage() {
     const formData = new FormData()
     formData.append('file', blob, suggestedFileName.value)
 
-    const response = api.post('/upload', formData, {
+    const response = await api.post('/upload', formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
     if (response.status !== 200 && response.status !== 201) {
