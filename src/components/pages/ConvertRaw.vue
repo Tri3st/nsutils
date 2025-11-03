@@ -2,6 +2,7 @@
 
 import {computed, ref} from "vue";
 import { useAuthStore } from '@/stores/auth'
+import { api } from "@/api";
 
 const { isLoading } = useAuthStore();
 
@@ -48,14 +49,17 @@ function normalizeToDataUrl(input: string): string {
   if (!input) throw new Error('Input is empty.')
   const trimmed = input.trim()
 
+  const noQuotes = trimmed.replace(/^['"]|['"]$/g, '');
+
   // If it is an HTML element, try to extract src
-  const htmlMatch = trimmed.match(/<img [^>]*src=["']([^"']+)["'][^>]*>/i)
+  const htmlMatch = noQuotes.match(/<img [^>]*src=["']([^"']+)["'][^>]*>/i);
+
   let matched;
 
   if (htmlMatch) {
     matched = htmlMatch[1];
   } else {
-    matched = trimmed;
+    matched = noQuotes;
   }
 
   // If already a data URL with image mime, just return
@@ -63,7 +67,8 @@ function normalizeToDataUrl(input: string): string {
     // minimal validation that the base64 part looks plausible
     const base64Part = matched.split(',')[1] ?? ''
     if (!isPlausibleBase64(base64Part)) {
-      throw new Error('Provided data URL does not contain valid-looking base64.')
+      error.value = 'Provided data URL does not contain valid-looking base64.';
+      throw new Error('Provided data URL does not contain valid-looking base64.');
     }
     return matched
   }
@@ -71,7 +76,8 @@ function normalizeToDataUrl(input: string): string {
   // Otherwise, attempt to treat it as raw base64 (possibly with whitespace)
   const cleaned = matched.replace(/\s+/g, '')
   if (!isPlausibleBase64(cleaned)) {
-    throw new Error('Input does not look like base64 image data.')
+    error.value = 'Input does not look like base64 image data.';
+    throw new Error('Input does not look like base64 image data.');
   }
 
   const guess = guessMimeFromBase64(cleaned)
@@ -130,7 +136,10 @@ function mimeToExt(mime: string): string {
 
 function dataUrlToBlob(url: string): { blob: Blob; mime: string } {
   const parsed = parseMimeFromDataUrl(url)
-  if (!parsed) throw new Error('Invalid data URL.')
+  if (!parsed) {
+    error.value = 'Invalid data URL.';
+    throw new Error('Invalid data URL.');
+  }
   const base64 = url.split(',')[1]
   const byteChars = atob(base64)
   const byteNums = new Array(byteChars.length)
@@ -158,14 +167,19 @@ async function uploadImage() {
   if (!dataUrl.value) return
   error.value = ''
   isUploading.value = true
+  const { blob } = dataUrlToBlob(dataUrl.value)
   try {
-    const { blob } = dataUrlToBlob(dataUrl.value)
-    console.log("Blob : ", blob);
+    // Send file to API
+    const formData = new FormData()
+    formData.append('file', blob, suggestedFileName.value)
 
-    // Placeholder: if not using Supabase yet, simulate success.
-    await new Promise((res) => setTimeout(res, 500))
-    // Success feedback could be improved with a toast/notification
-    alert('Upload complete (placeholder). Wire this to your backend or Supabase.')
+    const response = api.post('/upload', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    })
+    if (response.status !== 200 && response.status !== 201) {
+      error.value = `Upload failed with status ${response.status}.`;
+      throw new Error(`Upload failed with status ${response.status}`);
+    }
   } catch (e: any) {
     error.value = e?.message || 'Upload failed.'
   } finally {
