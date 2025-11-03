@@ -17,14 +17,15 @@ const error = ref<string>('');
 const isConverting = ref<boolean>(false);
 const isUploading = ref<boolean>(false);
 const isDownloading = ref<boolean>(false);
-const mime = ref<string>('');
+const fileType = ref<string>('');
 
 const fileName = ref<string>('image');
 
 // Derived filename with extension based on mime type
 const suggestedFileName = computed (() => {
   const { mime, ext } = parseMimeFromDataUrl(dataUrl.value) ?? { mime: '', ext: 'png' };
-  console.log("Mime : ", mime);
+  console.log("suggestedFileName computed:", { mime, ext });
+  fileType.value = ext;
   return fileName.value ? `${fileName.value}.${ext}` : `image.${ext}`;
 })
 
@@ -81,7 +82,6 @@ function normalizeToDataUrl(input: string): string {
   }
 
   const guess = guessMimeFromBase64(cleaned)
-  mime.value = guess.mime;
   return `data:${guess.mime};base64,${cleaned}`
 }
 
