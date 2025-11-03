@@ -229,7 +229,7 @@ async function uploadImage() {
 
   <div class="space-y-3" v-if="dataUrl">
     <h3 class="font-semibold">Preview</h3>
-    <h4 class="font-normal text-lg border rounded p-2">Type: {{ mime }}</h4>
+    <h4 class="font-normal text-lg border rounded p-2">Type: {{ fileType }}</h4>
     <div class="border rounded p-2 in;ine-block max-w-full">
       <img :src="dataUrl" alt="Converted Preview" class="max-w-full h-auto" />
     </div>
