@@ -33,6 +33,7 @@ function onSubmitConvert() {
   try {
     const normalized = normalizeToDataUrl(rawInput.value)
     dataUrl.value = normalized
+    rawInput.value = normalized;
   } catch (e: any) {
     error.value = e?.message || 'Failed to convert input to an image.'
     dataUrl.value = ''
