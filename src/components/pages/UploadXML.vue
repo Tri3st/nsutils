@@ -10,6 +10,7 @@ const uploadType = ref<'xml' | 'zip'>('xml');
 const selectedFile = ref<File | null>(null);
 const zipPassword = ref<string>('');
 const privatized = ref<boolean>(false);
+const inputFileRef = ref<HTMLInputElement | null>(null);
 
 const acceptTypes = computed(() => {
   return uploadType.value === 'xml' ? '.xml' : '.zip';
@@ -46,7 +47,7 @@ function clearAll(){
   zipPassword.value = '';
   selectedImage.value = null;
   uploadType.value = 'xml';
-  if (unputFileRef.value) {
+  if (inputFileRef.value) {
     inputFileRef.value.value = '';
   }
 }
