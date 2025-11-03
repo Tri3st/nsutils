@@ -47,18 +47,28 @@ function normalizeToDataUrl(input: string): string {
   if (!input) throw new Error('Input is empty.')
   const trimmed = input.trim()
 
+  // If it is an HTML element, try to extract src
+  const htmlMatch = trimmed.match(/<img [^>]*src=["']([^"']+)["'][^>]*>/i)
+  let matched;
+
+  if (htmlMatch) {
+    matched = htmlMatch[1];
+  } else {
+    matched = trimmed;
+  }
+
   // If already a data URL with image mime, just return
-  if (/^data:image\/[a-zA-Z0-9+.-]+;base64,/.test(trimmed)) {
+  if (/^data:image\/[a-zA-Z0-9+.-]+;base64,/.test(matched)) {
     // minimal validation that the base64 part looks plausible
-    const base64Part = trimmed.split(',')[1] ?? ''
+    const base64Part = matched.split(',')[1] ?? ''
     if (!isPlausibleBase64(base64Part)) {
       throw new Error('Provided data URL does not contain valid-looking base64.')
     }
-    return trimmed
+    return matched
   }
 
   // Otherwise, attempt to treat it as raw base64 (possibly with whitespace)
-  const cleaned = trimmed.replace(/\s+/g, '')
+  const cleaned = matched.replace(/\s+/g, '')
   if (!isPlausibleBase64(cleaned)) {
     throw new Error('Input does not look like base64 image data.')
   }
@@ -107,6 +117,7 @@ function parseMimeFromDataUrl(url: string): MimeGuess | null {
 function mimeToExt(mime: string): string {
   switch (mime) {
     case 'image/jpeg': return 'jpg'
+    case 'image/jpg': return 'jpg'
     case 'image/png': return 'png'
     case 'image/gif': return 'gif'
     case 'image/webp': return 'webp'
@@ -176,7 +187,7 @@ async function uploadImage() {
         cols="150" rows="30"
         class="w-full h-64 p-2 border rounded font-mono"
         v-model="rawInput"
-        placeholder="Paste base64 data here. With or without a header like: data:image/png;base64,iVBORw0..."
+        placeholder="Paste base64 data here. With or without a header like: data:image/png;base64,iVBORw0... An HTML <img /> tag with src attribute is also accepted."
     ></textarea>
     <div class="flex items-center gap-2">
       <button
