@@ -3,7 +3,6 @@
 import {computed, ref} from "vue";
 import { useAuthStore } from '@/stores/auth';
 import { usePhotoStore } from '@/stores/photoStore';
-import { api } from "@/api";
 
 const { isLoading } = useAuthStore();
 const photoStore = usePhotoStore();
