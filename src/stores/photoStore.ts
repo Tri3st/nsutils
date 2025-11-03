@@ -47,7 +47,31 @@ export const usePhotoStore = defineStore('photoStore', () => {
     } finally {
       loading.value = false;
     }
+  }
 
+  async function uploadFoto(dataBlob: Blob, suggestedFileName: string, mimeType: string) {
+    error.value = null;
+    loading.value = true;
+    try {
+      const formData = new FormData();
+      formData.append('file', dataBlob, suggestedFileName);
+      formData.append('image_type', mimeType);
+      formData.append('image_size' , dataBlob.size.toString());
+      
+      const uploadResponse = await api.post<ExtractedImage>(`/upload-foto/`, formData, {
+          headers: {
+              'Content-Type': 'multipart/form-data'
+          }
+      })
+
+      // Add the newly uploaded image to the store
+      images.value.push(uploadResponse.data);
+    } catch (e: any) {
+      error.value = e?.message || 'Failed to upload image.'
+      console.error(e);
+    } finally {
+      loading.value = false;
+    }
   }
 
   async function saveSelectedImages(ids: number[]){
@@ -76,6 +100,7 @@ export const usePhotoStore = defineStore('photoStore', () => {
     saving,
     error,
     uploadFotos,
+    uploadFoto,
     saveSelectedImages,
     reset
   }

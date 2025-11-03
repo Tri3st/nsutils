@@ -1,10 +1,12 @@
 <script setup lang="ts">
 
 import {computed, ref} from "vue";
-import { useAuthStore } from '@/stores/auth'
+import { useAuthStore } from '@/stores/auth';
+import { usePhotoStore } from '@/stores/photoStore';
 import { api } from "@/api";
 
 const { isLoading } = useAuthStore();
+const photoStore = usePhotoStore();
 
 type MimeGuess = {
   mime: string
@@ -164,27 +166,12 @@ function downloadImage() {
 }
 
 async function uploadImage() {
-  if (!dataUrl.value) return
-  error.value = ''
-  isUploading.value = true
-  const { blob } = dataUrlToBlob(dataUrl.value)
-  try {
-    // Send file to API
-    const formData = new FormData()
-    formData.append('file', blob, suggestedFileName.value)
+  if(!dataUrl.value) return;
 
-    const response = await api.post('/upload', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    })
-    if (response.status !== 200 && response.status !== 201) {
-      error.value = `Upload failed with status ${response.status}.`;
-      throw new Error(`Upload failed with status ${response.status}`);
-    }
-  } catch (e: any) {
-    error.value = e?.message || 'Upload failed.'
-  } finally {
-    isUploading.value = false
-  }
+  const { blob, mime } = dataUrlToBlob(dataUrl.value);
+  if (!blob) return;
+
+  await photoStore.uploadFoto(blob, suggestedFileName.value, mime);
 }
 
 
