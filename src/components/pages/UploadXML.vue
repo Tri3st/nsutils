@@ -4,40 +4,23 @@ import { usePhotoStore, ExtractedImage } from '@/stores/photoStore';
 
 const photoStore = usePhotoStore();
 
+// Component State
 const selectedImage  = ref<ExtractedImage | null>(null);
 const selectedIds = ref<number[]>([]);
 const uploadType = ref<'xml' | 'zip'>('xml');
 const selectedFile = ref<File | null>(null);
-const zipPassword = ref<string>('');
-const privatized = ref<boolean>(false);
+const zipPassword = ref('');
+const privatized = ref(false);
 const inputFileRef = ref<HTMLInputElement | null>(null);
 
+// Computed Properties
 const acceptTypes = computed(() => {
   return uploadType.value === 'xml' ? '.xml' : '.zip';
 });
 
+// Methods
 function togglePrivatized(){
   privatized.value = !privatized.value;
-}
-
-const isPrivatized = computed(() => {
-  return privatized.value;
-})
-
-const viewSelectedFile = computed(() => {
-  if (!selectedFile.value) return null;
-  return URL.createObjectURL(selectedFile.value);
-})
-
-async function saveSelectedImages() {
-  if (!selectedIds.value.length) return;
-
-  // implement your save logic here or in store if needed
-  // For now, just log the IDs
-  console.log('Saving selected images with ids: ', selectedIds.value);
-
-  // Send images to API to save.
-
 }
 
 function clearAll(){
@@ -48,45 +31,36 @@ function clearAll(){
   selectedImage.value = null;
   uploadType.value = 'xml';
   if (inputFileRef.value) {
-    inputFileRef.value.value = '';
+    inputFileRef.value.value = ''; // Resets the file input visually
   }
 }
 
 function onFileChanged(event: Event){
-  console.log("onFileChanged triggered");
   const target = event.target as HTMLInputElement;
   if (target.files?.length) {
-    console.log("File selected:", target.files[0].name);
     selectedFile.value = target.files[0];
   } else {
-    console.log("No file selected or file selection cancelled.");
     selectedFile.value = null;
   }
-  console.log("selectedFile.value is now:", selectedFile.value);
 }
 
 async function uploadFile() {
   if (!selectedFile.value) return;
 
-  const file = selectedFile.value;
-  if (uploadType.value === 'xml' || uploadType.value === 'zip') {
-    if (uploadType.value === 'zip' && !zipPassword.value) {
-      photoStore.error = 'ZIP password is required for ZIP files';
-      return;
-    }
-    await photoStore.uploadFotos(
-        file,
-        uploadType.value,
-        uploadType.value === 'zip' ? zipPassword.value : undefined
-    );
-  } else {
-    photoStore.error = 'Please select a file type';
-  }
+  // The store now handles its own errors, so we don't need to set them here.
+  await photoStore.uploadFotos(
+      selectedFile.value,
+      uploadType.value,
+      zipPassword.value // Pass the password directly; store handles if it's needed
+  );
 }
 
-// function viewImage(image: ExtractedImage) {
-//  selectedImage.value = image;
-// }
+async function saveSelectedImages() {
+  if (!selectedIds.value.length) return;
+  // This logic should be in the store, but for now, we'll leave the console.log
+  console.log('Saving selected images with ids: ', selectedIds.value);
+  // await photoStore.saveImages(selectedIds.value);
+}
 
 </script>
 
@@ -120,7 +94,7 @@ async function uploadFile() {
     
     <input type="file" @change="onFileChanged" :accept="acceptTypes" ref="inputFileRef" />
     <button
-      v-if="viewSelectedFile"
+      v-if="selectedFile"
       @click="uploadFile"
       class="ml-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
       :disabled="photoStore.loading"
@@ -156,19 +130,24 @@ async function uploadFile() {
       </div>
     </div>
 
-    <button
-        class="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        @click="togglePrivatized"
-    >{{ isPrivatized ? "Unprivatize" : "Privatize" }}</button>
-    <button
-        class="mt-4 bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
-        @click="clearAll"
-    >Clear</button>
-    <button
-        class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-        :disabled="viewSelectedFile && selectedIds.length === 0 || photoStore.saving"
-        @click="saveSelectedImages"
-    >Save selected ({{ selectedIds.length }})</button>
+    <!-- Action Buttons -->
+    <div class="mt-4 space-x-2">
+        <button
+            v-if="photoStore.images.length > 0"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            @click="togglePrivatized"
+        >{{ privatized ? "Unprivatize" : "Privatize" }}</button>
+        <button
+            v-if="photoStore.images.length > 0"
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+            :disabled="selectedIds.length === 0 || photoStore.saving"
+            @click="saveSelectedImages"
+        >Save selected ({{ selectedIds.length }})</button>
+        <button
+            class="bg-orange-600 text-white px-4 py-2 rounded hover:bg-orange-700"
+            @click="clearAll"
+        >Clear</button>
+    </div>
   </div>
 
 
