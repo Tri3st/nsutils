@@ -11,12 +11,14 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AButton: typeof import('ant-design-vue/es')['Button']
     ConvertRaw: typeof import('./src/components/pages/ConvertRaw.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
     Header: typeof import('./src/components/Header.vue')['default']
     HomePage: typeof import('./src/components/pages/HomePage.vue')['default']
     LoginPage: typeof import('./src/components/pages/LoginPage.vue')['default']
     Logout: typeof import('./src/components/pages/Logout.vue')['default']
+    NavButton: typeof import('./src/components/UI/navButton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     UploadXML: typeof import('./src/components/pages/UploadXML.vue')['default']

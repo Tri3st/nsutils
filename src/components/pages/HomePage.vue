@@ -20,17 +20,48 @@ const { isLoading } = useAuthStore();
       <li>
         <router-link
           to="/upload-xml"
-          class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
-          >Go to XML to PNG Upload</router-link
+          custom
+          v-slot="{ navigate, href, isActive }"
+        >
+          <a-button
+            :href="href"
+            type="default"
+            @click="navigate"
+            :class="{ 'ant-btn-hover': isActive }"
+          >Go to XML to PNG Upload</a-button>
+          </router-link
         >
       </li>
       <li>
         <router-link
           to="/view-uploads"
-          class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
-          >View upload folders</router-link
+          custom
+          v-slot="{ navigate, href, isActive }"
+          >
+            <a-button
+              :href="href"
+              type="default"
+              @click="navigate"
+              :class="{ 'ant-btn-hover': isActive }"
+            >View upload folders</a-button>
+          </router-link
         >
       </li>
+      <li>
+      <router-link
+          to="/convert-raw"
+          custom
+          v-slot="{ navigate, href, isActive }"
+      >
+        <a-button
+            :href="href"
+            type="default"
+            @click="navigate"
+            :class="{ 'ant-btn-hover': isActive }"
+        >View upload folders</a-button>
+      </router-link
+      >
+    </li>
       <li>
         This was made with
         <a
@@ -38,8 +69,13 @@ const { isLoading } = useAuthStore();
           target="_blank"
           rel="noopener"
           class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
-          >pythonanywhere.com</a
-        >
+          >Vue3 + TypeScript + Vite + TailwindCSS + AntDesignVue</a>
+          and hosted on <a
+            href="https://www.transip.nl"
+            target="_blank"
+            rel="noopener"
+            class="text-blue-700 underline hover:text-blue-900 underline-offset-2"
+          >TransIP</a>
       </li>
     </ul>
   </div>

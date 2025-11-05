@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
+import NavButton from "@/components/UI/navButton.vue";
 
 const authStore = useAuthStore();
 const { user, isAuthenticated, isAdmin } = storeToRefs(authStore);
@@ -24,12 +25,7 @@ const logoutActiveButton = "ring-2 ring-red-800";
 
     <!-- Center: Navigation Buttons -->
     <div class="flex space-x-4 text-sm">
-      <router-link
-        to="/"
-        :class="normalButton"
-        :active-class="normalActiveButton"
-        >Home</router-link
-      >
+      <NavButton url="/" text="Home" type="normal"/>
       <router-link
         to="/upload-xml"
         :class="normalButton"
