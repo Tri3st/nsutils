@@ -17,6 +17,7 @@ export default defineConfig({
           importStyle: false  // css in js
         }),
       ],
+      dts: true,  // generates a `components.d.ts` file for Typescript support
     }),
   ],
   resolve: {
