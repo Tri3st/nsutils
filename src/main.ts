@@ -5,7 +5,7 @@ import router from './router/index';
 import { createPinia } from "pinia";
 import { useAuthStore } from '@/stores/auth'
 import Antd from 'ant-design-vue';
-import 'ant-design-vue/dist/antd.css';
+import 'ant-design-vue/dist/reset.css';
 
 // Create the app
 const app = createApp(App);
