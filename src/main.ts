@@ -26,5 +26,3 @@ authStore.checkAuth().finally(() => {
     // Mount the app
     app.mount('#app');
 });
-
-
