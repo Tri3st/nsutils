@@ -8,6 +8,9 @@ const photoStore = usePhotoStore();
 const selectedImage = ref<ExtractedImage | null>(null);
 const privatized = ref<boolean>(false);
 
+const privatizedClass = "bg-red-500 hover:bg-red-600 text-white";
+const unprivatizedClass = "bg-green-500 hover:bg-green-600 text-white";
+
 function downloadImage(image: ExtractedImage) {
   const link = document.createElement("a");
   link.href = image.url;
@@ -30,6 +33,8 @@ onMounted(() => {
 
     <a-button 
       @click="togglePrivatized"
+      :class="privatized ? privatizedClass : unprivatizedClass"
+      type="primary"
     >{{ privatized ? "Unprivatize" : "Privatize" }}</a-button>
 
     <div v-if="photoStore.loading" class="text-blue-600">Loading images...</div>
