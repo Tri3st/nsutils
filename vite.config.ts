@@ -7,7 +7,24 @@ import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
 // https://vitejs.dev/config/
 export default defineConfig({
   build:  {
-    sourcemap: true
+    sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if(id.includes('node_modules')) {
+            if (id.includes('ant-design-vue')) {
+              return 'vendor_antdesign';
+            }
+            if (id.includes('pinia')) {
+              return 'vendor_pinia';
+            }
+          }
+          return 'vendor';
+        }
+      }
+    }
+  },
+    chunkSizeWarningLimit: 1600
   },
   plugins: [
     vue(),
