@@ -12,6 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AButton: typeof import('ant-design-vue/es')['Button']
+    ATooltip: typeof import('ant-design-vue/es')['Tooltip']
     ConvertRaw: typeof import('./src/components/pages/ConvertRaw.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
     Header: typeof import('./src/components/Header.vue')['default']

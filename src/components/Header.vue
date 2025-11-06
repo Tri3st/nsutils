@@ -6,16 +6,6 @@ import NavButton from "@/components/UI/navButton.vue";
 const authStore = useAuthStore();
 const { user, isAuthenticated, isAdmin } = storeToRefs(authStore);
 
-const normalButton = "inline-flex items-center justify-center px-4 py-2 rounded-xl bg-blue-600 text-white font-semibold" +
-    " hadow-sm hover:bg-blue-700 transition";
-const loginButton = "inline-flex items-center justify-center px-4 py-2 rounded-xl bg-green-600 text-white font-semibold" +
-    " shadow-sm hover:bg-green-700 transition";
-const logoutButton = "inline-flex items-center justify-center px-4 py-2 rounded-xl bg-red-600 text-white font-semibold" +
-    " shadow-sm hover:bg-red-700 transition";
-const normalActiveButton = "ring-2 ring-blue-800";
-const loginActiveButton = "ring-2 ring-green-800";
-const logoutActiveButton = "ring-2 ring-red-800";
-
 </script>
 
 <template>
@@ -26,55 +16,28 @@ const logoutActiveButton = "ring-2 ring-red-800";
     <!-- Center: Navigation Buttons -->
     <div class="flex space-x-4 text-sm">
       <NavButton url="/" text="Home" type="normal"/>
-      <router-link
-        to="/upload-xml"
-        :class="normalButton"
-        :active-class="normalActiveButton"
-        >Upload XML Files</router-link
-      >
-      <router-link
-        to="/view-uploads"
-        :class="normalButton"
-        :active-class="normalActiveButton"
-        >View uploads</router-link
-      >
-      <router-link
-        to="/convert-raw"
-        :class="normalButton"
-        :active-class="normalActiveButton"
-        >Convert RAW to PNG</router-link
-      >
+      <NavButton url="/upload-xml" text="Upload XML Files" type="normal"/>
+      <NavButton url="/view-uploads" text="View Uploads" type="normal"/>
+      <NavButton url="/convert-raw" text="Convert RAW to Image" type="normal"/>
 
       <!-- Right: Auth Section -->
       <div class="flex items-center space-x-3">
         <!-- Show when logged in -->
         <template v-if="isAuthenticated">
           <!-- Username + Crown if ADMIN -->
-          <div class="flex items-center space-x-1 text-blue-900 font-semibold">
+          <div class="flex items-center space-x-1 font-semibold">
             <!-- Avatar circle -->
-    <div
-      class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold uppercase"
-      v-if="user && user.username"
-      :title="user.username"
-    >
-      {{ user.username.charAt(0) }}
-    </div>
-	    <img src="/crown.svg" alt="Admin" class="w-5 h-5" v-if="isAdmin" />
+            <a-tooltip>
+              <NavButton url="/" :text="user!.username.charAt(0).toUpperCase()" type="circle"/>
+            </a-tooltip>
+          <img src="/crown.svg" alt="Admin" class="w-5 h-5" v-if="isAdmin" />
           </div>
-          <router-link
-              to="/logout"
-              :class="logoutButton"
-              :active-class="logoutActiveButton"
-          >Logout</router-link>
+          <NavButton url="/logout" text="Logout" type="logout"/>
         </template>
 
         <!-- Show when logged out -->
         <template v-else>
-          <router-link
-              to="/login"
-              :class="loginButton"
-              :active-class="loginActiveButton"
-          >Login</router-link>
+          <NavButton url="/login" text="Login" type="login"/>
         </template>
 
         <!-- Banner Image -->

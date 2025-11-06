@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import {computed, ref} from "vue";
 
-type NavButtonType = 'normal' | 'login' | 'logout';
+type NavButtonType = 'normal' | 'login' | 'logout' | 'circle';
 
 interface Props {
   type?: NavButtonType;
@@ -14,21 +14,15 @@ const props = defineProps<Props>();
 const typeClass = computed(() => {
   switch(props.type) {
     case 'login':
-      return 'nav-button--login';
+      return '!bg-green-600 hover:!bg-green-700';
     case 'logout':
-      return 'nav-button--logout';
+      return '!bg-red-600 hover:!bg-red-700';
+    case 'circle':
+      return '!bg-blue-300 hover:!bg-blue-400';
     default:
       return '';
   }
 });
-
-const buttonType = computed(() => {
-  if (props.type === 'login') return 'succes';
-  if (props.type === 'logout') return 'danger';
-  return 'primary'
-});
-
-
 
 </script>
 
@@ -39,10 +33,20 @@ const buttonType = computed(() => {
       v-slot="{ navigate, href, isActive }"
   >
     <a-button
-      :href="href"
-      :type="buttonType"
+      type="primary"
+      size="large"
+      shape="circle"
       @click="navigate"
       :class="[{ 'nav-button--active': isActive }, typeClass ]"
+      v-if="props.type === 'circle'"
+  >{{ text }}</a-button>
+    <a-button
+      :href="href"
+      type="primary"
+      size="large"
+      @click="navigate"
+      :class="[{ 'nav-button--active': isActive }, typeClass ]"
+      v-else
     >{{ text }}</a-button>
   </router-link
   >
@@ -51,6 +55,7 @@ const buttonType = computed(() => {
 <style scoped>
 .nav-button--login {
   /* optionally add extra styles for login buttons */
+
 }
 
 .nav-button--logout {
