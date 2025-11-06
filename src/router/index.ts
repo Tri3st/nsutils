@@ -3,6 +3,7 @@ import {
   createWebHistory,
   RouteRecordRaw,
   NavigationGuardNext,
+  RouteLocationNormalized
 } from "vue-router";
 import { useAuthStore } from "@/stores/auth";
 
@@ -14,7 +15,11 @@ declare module "vue-router" {
 }
 
 const routes: Array<RouteRecordRaw> = [
-  { path: "/", name: "Home", component: () => import("@/components/pages/HomePage.vue")},
+  { 
+    path: "/", 
+    name: "Home", 
+    component: () => import("@/components/pages/HomePage.vue")
+  },
   {
     path: "/upload-xml",
     name: "UploadXML",
@@ -39,7 +44,11 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import("@/components/pages/Logout.vue"),
     meta: { requiresAuth: true },
   },
-  { path: "/login", name: "Login", component: () => import("@/components/pages/LoginPage.vue") },
+  { 
+    path: "/login", 
+    name: "Login", 
+    component: () => import("@/components/pages/LoginPage.vue") 
+  },
 ];
 
 const router = createRouter({
@@ -47,9 +56,11 @@ const router = createRouter({
   routes,
 });
 
+// Get the authStrore instance
+const authStore = useAuthStore();
+
 // Auth guard
-router.beforeEach(async (to: any, _, next: NavigationGuardNext) => {
-  const authStore = useAuthStore();
+router.beforeEach(async (to: RouteLocationNormalized, _, next: NavigationGuardNext) => {
   // Check auth status on every navigation
   if (authStore.user === null) {
     await authStore.checkAuth();

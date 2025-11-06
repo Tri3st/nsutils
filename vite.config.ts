@@ -19,8 +19,11 @@ export default defineConfig({
             if (id.includes('pinia')) {
               return 'vendor_pinia';
             }
+            if (id.includes('vue-router')) {
+              return 'vendor_router';
+            }
           }
-          return 'vendor';
+          return 'vendor_others';
         }
       }
     },

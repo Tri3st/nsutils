@@ -14,8 +14,8 @@ const app = createApp(App);
 const pinia = createPinia();
 
 // Register the router and pinia
-app.use(router);
 app.use(pinia);
+app.use(router);
 app.use(Antd);
 
 // Initialize auth before mounting
