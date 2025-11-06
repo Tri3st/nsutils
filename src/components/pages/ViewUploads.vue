@@ -1,15 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import {usePhotoStore} from "@/stores/photoStore.ts";
-
-interface ExtractedImage {
-  id: number;
-  url: string;
-  medewerker_number: string;
-  image_type: string;
-  image_size: number;
-  original_filename: string;
-}
+import type { ExtractedImage } from '@/stores/photoStore';
 
 const photoStore = usePhotoStore();
 
@@ -19,7 +11,7 @@ const selectedImage = ref<ExtractedImage | null>(null);
 function downloadImage(image: ExtractedImage) {
   const link = document.createElement('a');
   link.href = image.url;
-  link.download = image.original_filename || 'download.jpg';
+  link.download = image.original_filename ?? 'download.jpg';
   link.click();
 }
 
@@ -117,7 +109,7 @@ onMounted(() => {
 
         <img :src="selectedImage.url" class="w-full max-h-[80vh] object-contain rounded" />
         <div class="mt-3 text-center text-gray-700 text-sm">
-          <div class="font-semibold">{{ selectedImage.original_filename }}</div>
+          <div class="font-semibold">{{ selectedImage.original_filename ?? 'Unknown image' }}</div>
           <div>{{ selectedImage.image_type }} • {{ (selectedImage.image_size / 1024).toFixed(1) }} KB</div>
           <button
               @click="downloadImage(selectedImage)"
