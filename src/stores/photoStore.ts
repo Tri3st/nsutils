@@ -9,8 +9,8 @@ export interface ExtractedImage {
   image_size: number;
   image_type: string;
   medewerker_number: string;
-  owners_username: string | null;
-  
+  owner_username: string | null;
+
   original_filename: string | null;
 }
 
