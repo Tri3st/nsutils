@@ -15,20 +15,20 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks(id: string) {
-          if(id.includes('node_modules')) {
-            if (id.includes('ant-design-vue')) {
-              return 'vendor_antdesign';
-            }
-            if (id.includes('pinia')) {
-              return 'vendor_pinia';
-            }
-            if (id.includes('vue-router')) {
-              return 'vendor_router';
-            }
-          }
-          return 'vendor_others';
-        }
+        // manualChunks(id: string) {
+        //   if(id.includes('node_modules')) {
+        //     if (id.includes('ant-design-vue')) {
+        //       return 'vendor_antdesign';
+        //     }
+        //     if (id.includes('pinia')) {
+        //       return 'vendor_pinia';
+        //     }
+        //     if (id.includes('vue-router')) {
+        //       return 'vendor_router';
+        //     }
+        //   }
+        //   return 'vendor_others';
+        // }
       }
     },
     chunkSizeWarningLimit: 1600
