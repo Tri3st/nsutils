@@ -10,7 +10,7 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks(id: number) {
+        manualChunks(id: any) {
           if(id.includes('node_modules')) {
             if (id.includes('ant-design-vue')) {
               return 'vendor_antdesign';
