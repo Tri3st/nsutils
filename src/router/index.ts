@@ -56,11 +56,11 @@ const router = createRouter({
   routes,
 });
 
-// Get the authStrore instance
-const authStore = useAuthStore();
-
 // Auth guard
 router.beforeEach(async (to: RouteLocationNormalized, _, next: NavigationGuardNext) => {
+    // Get the authStore instance
+    const authStore = useAuthStore();
+    
   // Check auth status on every navigation
   if (authStore.user === null) {
     await authStore.checkAuth();
