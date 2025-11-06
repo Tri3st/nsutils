@@ -10,6 +10,8 @@ export interface ExtractedImage {
   image_type: string;
   medewerker_number: string;
   owners_username: string | null;
+  
+  original_filename: string | null;
 }
 
 // Interface for the paginated API response
