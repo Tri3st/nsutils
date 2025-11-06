@@ -10,7 +10,7 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks(id) {
+        manualChunks(id: number) {
           if(id.includes('node_modules')) {
             if (id.includes('ant-design-vue')) {
               return 'vendor_antdesign';
@@ -22,8 +22,7 @@ export default defineConfig({
           return 'vendor';
         }
       }
-    }
-  },
+    },
     chunkSizeWarningLimit: 1600
   },
   plugins: [
@@ -42,4 +41,4 @@ export default defineConfig({
       '@': path.resolve(__dirname, 'src')
     }
   }
-})
+});
