@@ -6,12 +6,17 @@ import type { ExtractedImage } from "@/stores/photoStore";
 const photoStore = usePhotoStore();
 
 const selectedImage = ref<ExtractedImage | null>(null);
+const privatized = ref<boolean>(false);
 
 function downloadImage(image: ExtractedImage) {
   const link = document.createElement("a");
   link.href = image.url;
   link.download = image.original_filename ?? "download.jpg";
   link.click();
+}
+
+function togglePrivatized() {
+  privatized.value = !privatized.value;
 }
 
 onMounted(() => {
@@ -22,6 +27,10 @@ onMounted(() => {
 <template>
   <div class="p-6">
     <h2 class="text-2xl font-semibold mb-4">Uploaded Photos</h2>
+
+    <a-button 
+      @click="togglePrivatized"
+    >{{ privatized ? "Unprivatize" : "Privatize" }}</a-button>
 
     <div v-if="photoStore.loading" class="text-blue-600">Loading images...</div>
     <div v-if="photoStore.error" class="text-red-600">
@@ -43,7 +52,7 @@ onMounted(() => {
           class="w-24 h-24 object-cover rounded cursor-pointer"
           @click="selectedImage = image"
         />
-        <div class="mt-2 text-sm text-gray-700 font-semibold">
+        <div class="mt-2 text-sm text-gray-700 font-semibold" v-if="!privatized">
           {{ image.medewerker_number }}
         </div>
         <div class="text-xs text-gray-500">
