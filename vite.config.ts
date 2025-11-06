@@ -27,7 +27,7 @@ export default defineConfig({
               return 'vendor_router';
             }
           }
-          return 'vendor_others';
+          return undefined;
         }
       }
     },
