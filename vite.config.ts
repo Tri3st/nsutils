@@ -5,6 +5,8 @@ import path from 'path'
 import Components from 'unplugin-vue-components/vite';
 import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
 import { visualizer } from 'rollup-plugin-visualizer';
+import 'ant-design-vue/dist/reset.css';
+import 'ant-design-vue/dist/antd.css';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,20 +17,20 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        // manualChunks(id: string) {
-        //   if(id.includes('node_modules')) {
-        //     if (id.includes('ant-design-vue')) {
-        //       return 'vendor_antdesign';
-        //     }
-        //     if (id.includes('pinia')) {
-        //       return 'vendor_pinia';
-        //     }
-        //     if (id.includes('vue-router')) {
-        //       return 'vendor_router';
-        //     }
-        //   }
-        //   return 'vendor_others';
-        // }
+        manualChunks(id: string) {
+          if(id.includes('node_modules')) {
+            if (id.includes('vue')) {
+              return 'vendor_vue';
+            }
+            if (id.includes('pinia')) {
+              return 'vendor_pinia';
+            }
+            if (id.includes('vue-router')) {
+              return 'vendor_router';
+            }
+          }
+          return 'vendor_others';
+        }
       }
     },
     chunkSizeWarningLimit: 1600
