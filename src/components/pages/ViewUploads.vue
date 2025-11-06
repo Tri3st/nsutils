@@ -5,7 +5,6 @@ import type { ExtractedImage } from "@/stores/photoStore";
 
 const photoStore = usePhotoStore();
 
-const images = ref<ExtractedImage[]>([]);
 const selectedImage = ref<ExtractedImage | null>(null);
 
 function downloadImage(image: ExtractedImage) {
@@ -30,7 +29,7 @@ onMounted(() => {
     </div>
 
     <div
-      v-if="images.length"
+      v-if="photoStore.images.length"
       class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4"
     >
       <div
@@ -63,9 +62,7 @@ onMounted(() => {
     <div class="flex justify-center items-center mt-6 space-x-4">
       <button
         @click="
-          photoStore.fetchUploads(
-            `/list_uploaded_fotos/?page=${photoStore.prevPage}`
-          )
+          photoStore.fetchUploads(photoStore.prevPage)
         "
         :disabled="!photoStore.prevPage"
         class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
@@ -80,9 +77,7 @@ onMounted(() => {
 
       <button
         @click="
-          photoStore.fetchUploads(
-            `/list_uploaded_fotos/?page=${photoStore.nextPage}`
-          )
+          photoStore.fetchUploads(photoStore.nextPage)
         "
         :disabled="!photoStore.nextPage"
         class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
