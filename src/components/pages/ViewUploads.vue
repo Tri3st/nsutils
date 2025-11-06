@@ -15,8 +15,6 @@ const photoStore = usePhotoStore();
 
 const images = ref<ExtractedImage[]>([]);
 const selectedImage = ref<ExtractedImage | null>(null);
-const loading = ref(false);
-const error = ref<string | null>(null);
 
 function downloadImage(image: ExtractedImage) {
   const link = document.createElement('a');
@@ -34,12 +32,12 @@ onMounted(() => {
   <div class="p-6">
     <h2 class="text-2xl font-semibold mb-4">Uploaded Photos</h2>
 
-    <div v-if="loading" class="text-blue-600">Loading images...</div>
-    <div v-if="error" class="text-red-600">{{ error }}</div>
+    <div v-if="photoStore.loading" class="text-blue-600">Loading images...</div>
+    <div v-if="photoStore.error" class="text-red-600">{{ photoStore.error }}</div>
 
     <div v-if="images.length" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
       <div
-          v-for="image in images"
+          v-for="image in photoStore.images"
           :key="image.id"
           class="bg-white rounded-lg shadow hover:shadow-md p-2 flex flex-col items-center transition-all"
       >
