@@ -63,7 +63,7 @@ onMounted(() => {
     <!-- Pagination Controls -->
     <div class="flex justify-center items-center mt-6 space-x-4">
       <button
-          @click="photoStore.fetchUploads(photoStore.prevPage)"
+          @click="photoStore.fetchUploads(`/list_uploaded_fotos/?page=${photoStore.prevPage}`)"
           :disabled="!photoStore.prevPage"
           class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
       >
@@ -76,7 +76,7 @@ onMounted(() => {
       </div>
 
       <button
-          @click="photoStore.fetchUploads(photoStore.nextPage)"
+          @click="photoStore.fetchUploads(`/list_uploaded_fotos/?page=${photoStore.nextPage}`)"
           :disabled="!photoStore.nextPage"
           class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 disabled:opacity-50"
       >
@@ -95,7 +95,7 @@ onMounted(() => {
           class="w-16 border rounded px-2 py-1 text-center"
       />
       <button
-          @click="photoStore.fetchUploads(`/uploaded-fotos/?page=${photoStore.currentPage}`)"
+          @click="photoStore.fetchUploads(`/list_uploaded_fotos/?page=${photoStore.currentPage}`)"
           class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
       >
         Go
