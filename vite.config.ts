@@ -1,9 +1,13 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { fileURLToPath } from 'url'
 import path from 'path'
 import Components from 'unplugin-vue-components/vite';
 import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers';
 import { visualizer } from 'rollup-plugin-visualizer';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,7 +15,7 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks(id: any) {
+        manualChunks(id: string) {
           if(id.includes('node_modules')) {
             if (id.includes('ant-design-vue')) {
               return 'vendor_antdesign';
