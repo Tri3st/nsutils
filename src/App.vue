@@ -14,7 +14,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div class="min-h-screen bg-black text-gray-200 flex flex-col">
     <Header />
     <main class="flex-grow container mx-auto px-6 py-8">
       <RouterView></RouterView>

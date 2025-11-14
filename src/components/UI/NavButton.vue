@@ -1,13 +1,6 @@
 <script setup lang="ts">
 import {computed} from "vue";
-
-type NavButtonType = 'normal' | 'login' | 'logout' | 'circle';
-
-interface Props {
-  type?: NavButtonType;
-  url: string;
-  text: string;
-}
+import { Props } from "@/types/buttons.ts";
 
 const props = defineProps<Props>();
 
