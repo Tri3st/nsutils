@@ -1,11 +1,26 @@
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth';
-import { storeToRefs } from 'pinia';
-import NavButton from "@/components/UI/navButton.vue";
+import {useRouter} from "vue-router";
+import {useAuthStore} from "@/stores/auth";
+import DropDownComponent from "@/components/UI/DropDownComponent.vue";
+import NavButton from "@/components/UI/NavButton.vue";
 
+const router = useRouter();
 const authStore = useAuthStore();
-const { user, isAuthenticated, isAdmin } = storeToRefs(authStore);
 
+const dropDownItems = [
+  {
+    text: 'UploadXML',
+    url: '/upload-xml'
+  },
+  {
+    text: 'View Uploads',
+    url: '/view-uploads'
+  },
+  {
+    text: 'Convert RAW',
+    url: '/convert-raw'
+  },
+]
 </script>
 
 <template>
@@ -19,7 +34,6 @@ const { user, isAuthenticated, isAdmin } = storeToRefs(authStore);
       <NavButton url="/upload-xml" text="Upload XML Files" type="normal"/>
       <NavButton url="/view-uploads" text="View Uploads" type="normal"/>
       <NavButton url="/convert-raw" text="Convert RAW to Image" type="normal"/>
-      <NavButton url="/user-manager" text="User Manager" type="normal"/>
 
       <!-- Right: Auth Section -->
       <div class="flex items-center space-x-3">
@@ -44,7 +58,28 @@ const { user, isAuthenticated, isAdmin } = storeToRefs(authStore);
         <!-- Banner Image -->
         <img src="/new_banner_small.jpg" alt="Banner" class="h-12 w-auto" />
       </div>
-    </div>
 
-  </nav>
+      <!-- User AVATAR if authenticated -->
+      <NavButton
+          url=""
+          :text="authStore.user.username.charAt(0).toUpperCase()"
+          type="circle"
+          v-if="authStore.user"/>
+
+      <!-- Logout -->
+      <NavButton
+          v-if="authStore.user"
+          url="/logout"
+          text="Logout"
+          type="logout"/>
+
+      <!-- If NOT authenticated -->
+      <NavButton
+          v-else
+          url="/login"
+          text="Login"
+          type="login"/>
+
+    </div>
+  </a-layout-header>
 </template>
