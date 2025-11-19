@@ -19,6 +19,7 @@ const { user, isAuthenticated, isAdmin } = storeToRefs(authStore);
       <NavButton url="/upload-xml" text="Upload XML Files" type="normal"/>
       <NavButton url="/view-uploads" text="View Uploads" type="normal"/>
       <NavButton url="/convert-raw" text="Convert RAW to Image" type="normal"/>
+      <NavButton url="/user-manager" text="User Manager" type="normal"/>
 
       <!-- Right: Auth Section -->
       <div class="flex items-center space-x-3">
