@@ -24,21 +24,48 @@ const dropDownItems = [
 </script>
 
 <template>
-  <a-layout-header>
-  <nav class="bg-yellow-400 flex items-center justify-between px-6 py-2 shadow-md">
-    <!-- Left: NS Logo -->
-    <img src="/nslogo.svg" alt="NS Logo" class="h-8 w-auto" />
+  <a-layout-header class="flex items-center bg-black/40 px-6 backdrop-blur sticky top-0">
 
-    <!-- Center: Navigation Buttons -->
-    <div class="flex space-x-4 text-sm">
+    <!-- LEFT: Logo -->
+    <div class="flex-1 flex items-center bg-black/40 px-6 backdrop-blur sticky top-0">
+      <div
+          class="text-xl font-bold text-purple-700 cursor-pointer mr-4"
+          @click="router.push('/')"
+      >
+        Martin's Home
+      </div>
+    </div>
+
+    <!-- CENTER -->
+    <div class="flex-1 flex justify-center items-center space-x-6">
+
+      <!-- Public nav -->
       <NavButton url="/" text="Home" type="normal"/>
-      <NavButton url="/upload-xml" text="Upload XML Files" type="normal"/>
-      <NavButton url="/view-uploads" text="View Uploads" type="normal"/>
-      <NavButton url="/convert-raw" text="Convert RAW to Image" type="normal"/>
+      <NavButton url="/aboutme" text="About Me" type="normal"/>
+      <!-- If authenticated -->
+      <template>
+         <NavButton url="/myhealth" text="My Health" type="normal" v-if="authStore.user"/>
+      </template>
+     
+      <NavButton url="/links" text="Links" type="normal"/>
 
+      <!-- If authenticated -->
+      <template v-if="authStore.user">
+        <!-- Replace DropDownComponent with simple NavButton -->
+        <NavButton url="/nsutilities" text="NSUtilities" type="normal" />
+      </template>
+
+      <!-- RIGHT | User info -->
+      <div class="flex-1 flex items-center justify-end space-x-4">
+        <!-- Crown if admin -->
+        <div
+            v-if="authStore.isAdmin"
+            class="w-8 h-8 bg-yellow-300 mr-2"
+            style="mask: url('/crown.svg') no-repeat center; mask-size: contain;"></div>
+
+      </div>
 
       <!-- User AVATAR if authenticated -->
-      <img src="/crown.svg" alt="Admin" class="w-5 h-5" v-if="isAdmin" />
       <NavButton
           url=""
           :text="authStore.user.username.charAt(0).toUpperCase()"
@@ -58,9 +85,7 @@ const dropDownItems = [
           url="/login"
           text="Login"
           type="login"/>
-        <!-- Banner Image -->
-        <img src="/new_banner_small.jpg" alt="Banner" class="h-12 w-auto" />
+
     </div>
-    </nav>
   </a-layout-header>
 </template>
