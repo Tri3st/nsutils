@@ -5,21 +5,6 @@ import NavButton from "@/components/UI/NavButton.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
-
-const dropDownItems = [
-  {
-    text: 'UploadXML',
-    url: '/upload-xml'
-  },
-  {
-    text: 'View Uploads',
-    url: '/view-uploads'
-  },
-  {
-    text: 'Convert RAW',
-    url: '/convert-raw'
-  },
-]
 </script>
 
 <template>
