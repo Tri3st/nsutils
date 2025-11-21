@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
 import {computed, ref} from "vue";
-import { useAuthStore } from '@/stores/auth';
-import { usePhotoStore } from '@/stores/photoStore';
+import { useAuthStore } from '@/stores/auth.ts';
+import { usePhotoStore } from '@/stores/photoStore.ts';
 
 const { isLoading } = useAuthStore();
 const photoStore = usePhotoStore();

@@ -27,8 +27,8 @@ const authStore = useAuthStore();
       <NavButton url="/" text="Home" type="normal"/>
       <NavButton url="/aboutme" text="About Me" type="normal"/>
       <!-- If authenticated -->
-      <template>
-         <NavButton url="/myhealth" text="My Health" type="normal" v-if="authStore.user"/>
+      <template v-if="authStore.user">
+         <NavButton url="/myhealth" text="My Health" type="normal" />
       </template>
      
       <NavButton url="/links" text="Links" type="normal"/>
