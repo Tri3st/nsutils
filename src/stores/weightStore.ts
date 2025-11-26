@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { api } from '@/api';
-import type { WeightData, WeightMeasurement, WeightState, FetchParams } from '@/types/weight';
+import type { WeightMeasurement, FetchParams } from '@/types/weight';
 
 export const useWeightStore = defineStore('weightStore', () => {
     

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import Highcharts from 'highcharts';
 import HighchartsVue from 'highcharts-vue';
 import { message } from 'ant-design-vue';
@@ -10,6 +10,8 @@ const viewMode = ref<'table' | 'chart'>('table');
 const weightData = ref<Array<WeightData>>([]);
 const loading = ref<boolean>(false);
 const error = ref<string | null>(null);
+
+const chartType = ref<'line' | 'column' | 'area'>('line');
 
 const currentPage = ref<number>(1);
 const pageSize = ref<number>(10);
@@ -86,8 +88,13 @@ const tablePagination = ref<{
 // Get data from store and api
 
 // Chart options reactive
-const chartOptions = ref({
+const chartOptions = ref<Highcharts.Options>({
     title: { text: 'Weight Measurement Over Time'},
+    chart: {
+        type: chartType.value,
+        zoomType: 'x',
+        backgroundColor: 'transparent',
+    },
     xAxis: {
         type: 'datetime',
         title: { text: 'Date' }
@@ -99,27 +106,40 @@ const chartOptions = ref({
         {
             name: 'Weight (kg)',
             data: weightData.value.map((item: WeightData) => [new Date(item.date).getTime(), item.weightKg]),
-            type: 'line'
+            type: chartType.value,
+            marker: {
+                enabled: true,
+                radius: 3
+            },
+            lineWidth: 2,
         },
     ],
     credits: { enabled: false },
 });
 
-// Update chart data when weightData changes and viewMode is 'chart'
-watch(
-    [weightData, viewMode], 
-    () => {
-        if (viewMode.value === 'chart') {
-            const seriesData = weightData.value
-                .map((item: WeightData) => {
-                    return [new Date(item.date).getTime(), item.weightKg]
-            })
+const seriesData = computed(() => {
+    defineProps.weightData
+        .map((item: WeightData) => {
+            return [new Date(item.date).getTime(), item.weightKg]
             .sort((a: any, b: any) => a[0] - b[0])
-        chartOptions.value.series[0].data = seriesData;
-        }
-    }, 
-    { immediate: true }
-);
+    })
+});
+
+// // Update chart data when weightData changes and viewMode is 'chart'
+// watch(
+//     [weightData, viewMode], 
+//     () => {
+//         if (viewMode.value === 'chart') {
+//             const seriesData = weightData.value
+//                 .map((item: WeightData) => {
+//                     return [new Date(item.date).getTime(), item.weightKg]
+//             })
+//             .sort((a: any, b: any) => a[0] - b[0])
+//         chartOptions.value.series[0].data = seriesData;
+//         }
+//     }, 
+//     { immediate: true }
+// );
 
 onMounted(() => {
     // get weight data from store or api
