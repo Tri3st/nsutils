@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { api } from '@/api.ts';
 import { ref } from 'vue';
-import type { ExtractedImage, PaginatedUploadsResponse } from '@/types/photo.ts';
+import type { ExtractedImage, PaginatedUploadsResponse } from '@/types/fotos.ts';
 
 
 export const usePhotoStore = defineStore('photoStore', () => {

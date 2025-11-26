@@ -2,7 +2,6 @@
 import { ref, onMounted, computed, watch } from 'vue';
 import Highcharts from 'highcharts';
 import HighchartsVue from 'highcharts-vue';
-import { message } from 'ant-design-vue';
 import type { WeightData } from '@/types/weight';
 import { useWeightStore } from '@/stores/weightStore';
 
@@ -100,7 +99,13 @@ const chartOptions = ref<Highcharts.Options>({
         title: { text: 'Date' }
     },
     yAxis: {
-        title: { text: 'Weight (kg)' }
+        title: { text: 'Weight (kg)' },
+        min: 0,
+    },
+    tooltip: {
+        shared: true,
+        xDateFormat: '%A, %b %e, %Y %H:%M',
+        valueSuffix: ' kg',
     },
     series: [
         {
@@ -115,6 +120,7 @@ const chartOptions = ref<Highcharts.Options>({
         },
     ],
     credits: { enabled: false },
+    legend: { enabled: true },
 });
 
 const seriesData = computed(() => {
@@ -174,7 +180,7 @@ onMounted(() => {
         :loading="loading"
         bordered
     />
-
+    
     <highcharts :options="chartoptions" v-if="viewMode === 'chart'" ref="highchartsRef"/>  
 </div>
 </template>
