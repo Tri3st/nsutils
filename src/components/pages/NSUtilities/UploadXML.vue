@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
-import { usePhotoStore, ExtractedImage } from '@/stores/photoStore.ts';
+import { usePhotoStore } from '@/stores/photoStore.ts';
+import type { ExtractedImage } from '@/types/fotos';
 
 const photoStore = usePhotoStore();
 
