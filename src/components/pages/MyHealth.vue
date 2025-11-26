@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import Highcharts from 'highcharts';
 import HighchartsVue from 'highcharts-vue';
 import { message } from 'ant-design-vue';
@@ -125,21 +125,23 @@ const seriesData = computed(() => {
     })
 });
 
-// // Update chart data when weightData changes and viewMode is 'chart'
-// watch(
-//     [weightData, viewMode], 
-//     () => {
-//         if (viewMode.value === 'chart') {
-//             const seriesData = weightData.value
-//                 .map((item: WeightData) => {
-//                     return [new Date(item.date).getTime(), item.weightKg]
-//             })
-//             .sort((a: any, b: any) => a[0] - b[0])
-//         chartOptions.value.series[0].data = seriesData;
-//         }
-//     }, 
-//     { immediate: true }
-// );
+// Reference for the Highcharts component instance (optional)
+const highchartsRef = ref<InstanceType<typeof HighchartsVue> | null>(null);
+
+// Watch for chart type changes to update chart options
+watch(chartType, (newType: 'line' | 'column' | 'area') => {
+    chartOptions.value.chart!.type = newType;
+    if (chartOptions.value.series && chartOptions.value.series[0]) {
+        chartOptions.value.series[0].type = newType;
+    }
+});
+
+// Watch for data changes and update points
+watch(seriesData, (newData: Array<[number, number]>) => {
+    if(chartOptions.value.series && chartOptions.value.series[0]) {
+        chartOptions.value.series[0].data = newData;
+    }
+});
 
 onMounted(() => {
     // get weight data from store or api
@@ -173,7 +175,7 @@ onMounted(() => {
         bordered
     />
 
-    <highcharts :options="chartoptions" v-if="viewMode === 'chart'" />  
+    <highcharts :options="chartoptions" v-if="viewMode === 'chart'" ref="highchartsRef"/>  
 </div>
 </template>
 
