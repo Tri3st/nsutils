@@ -3,15 +3,12 @@ import { ref } from 'vue'
 import { api } from '@/api';
 import type { WeightData, WeightMeasurement, WeightState, FetchParams } from '@/types/weight';
 
-
-
 export const useWeightStore = defineStore('weightStore', () => {
     
     // State
-    const weightData = ref<Array<WeightMeasurement>>([]),
-    const loading = ref(false),
-    const error = ref<string | null>(null),
-
+    const weightData = ref<Array<WeightMeasurement>>([]);
+    const loading = ref(false);
+    const error = ref<string | null>(null);
 
     // Actions
     async function fetchWeightData(params: FetchParams = {}) {
