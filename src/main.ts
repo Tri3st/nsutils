@@ -5,6 +5,7 @@ import router from './router/index';
 import { createPinia } from "pinia";
 import { useAuthStore } from '@/stores/auth'
 import Antd from 'ant-design-vue';
+import HighchartsVue from 'highcharts-vue';
 import 'ant-design-vue/dist/reset.css';
 
 // Create the app
@@ -17,6 +18,7 @@ const pinia = createPinia();
 app.use(pinia);
 app.use(router);
 app.use(Antd);
+app.use(HighchartsVue);
 
 // Initialize auth before mounting
 const authStore = useAuthStore();
