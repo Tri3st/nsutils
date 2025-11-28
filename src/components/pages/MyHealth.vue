@@ -105,6 +105,7 @@ onMounted(() => {
     // get weight data from store or api
     // populate weightData, totalItems, loading, error accordingly
     weightStore.fetchWeightData({ page: 1 });
+    weightStore.fetchMinMaxAvgWeight();
 });
 
 </script>

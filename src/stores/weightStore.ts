@@ -11,6 +11,23 @@ interface PaginationResponse {
     results: WeightMeasurement[];
 }
 
+interface Minmaxavg {
+    'weight_kg': number;
+    'bone_mass': number;
+    'body_fat': number;
+    'body_water': number;
+    'muscle_mass': number;
+    'bmi': number;
+}
+
+interface MinmaxavgType {
+    'minmaxavg': {
+        'avg': Minmaxavg;
+        'min': Minmaxavg;
+        'max': Minmaxavg;
+    }
+}
+
 export const useWeightStore = defineStore('weightStore', () => {
     
     // State
@@ -23,6 +40,8 @@ export const useWeightStore = defineStore('weightStore', () => {
     const totalPages = ref<number>(0);
     const currentPage = ref<number>(1);
     const pageSize = ref<number>(12);
+
+    const minmaxavg = ref<MinmaxavgType | null>(null);
 
     // Actions
     async function fetchWeightData(params: FetchParams = {}) {
@@ -60,12 +79,28 @@ export const useWeightStore = defineStore('weightStore', () => {
         loading.value = false
       }
     }
+
+    async function fetchMinMaxAvgWeight(){
+        error.value = null;
+        loading.value = true;
+        try {
+            const response = await api.get<MinmaxavgType>('/minmaxavg/');
+            minmaxavg.value = response.data;
+            console.log(response.data)
+            console.log(minmaxavg.value);
+        } catch (err: any) {
+            error.value = err.response?.data?.detail || err?.message || 'Failed to fetch min/max/avg weight';
+        } finally {
+            loading.value = false;
+        }
+    }
     
     return {
       weightData,
       loading,
       error,
       fetchWeightData,
+      fetchMinMaxAvgWeight,
       totalItems,
       totalPages,
       currentPage,
