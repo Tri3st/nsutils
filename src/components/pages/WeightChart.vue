@@ -1,78 +1,71 @@
 <script setup lang="ts">
-// Chart options reactive
-import {computed, ref, watch} from "vue";
-import {WeightData} from "@/types/weight.ts";
-import HighchartsVue from 'highcharts-vue';
+import {useWeightStore} from "@/stores/weightStore.ts";
+import Highcharts from "highcharts-vue";
+import {storeToRefs} from "pinia";
+import {computed, onMounted} from "vue";
 
-const props = defineProps<{
-  weightData: Array<WeightData>
-}>();
-const chartType = ref<'line' | 'column' | 'area'>('line');
+const weightStore = useWeightStore();
+const { weightData, error, loading } = storeToRefs(weightStore);
 
-const chartOptions = ref<Highcharts.Options>({
-  title: { text: 'Weight Measurement Over Time'},
+onMounted(() => {
+  weightStore.fetchWeightData();
+})
+
+const weightSeries = computed(() => {
+  return weightData.value.map(item =>
+  {
+    return [
+        new Date(item.date).getTime(),
+        Number(item.weight_kg)
+    ];
+  });
+});
+
+const chartOptions = computed(() => ({
   chart: {
-    type: chartType.value,
-    backgroundColor: 'transparent',
+    type: "line",
+    height: 400,
+    backgroundColor: 'transparent'
+  },
+  title: {
+    text: "Weight over time",
+    style: {color: "#222", fontSize: "20px", fontWeight: "bold"},
   },
   xAxis: {
-    type: 'datetime',
-    title: { text: 'Date' }
+    type: "datetime",
+    title: {text: "Date"},
   },
   yAxis: {
-    title: { text: 'Weight (kg)' },
-    min: 0,
+    title: {text: "Weight (kg)"},
   },
-  tooltip: {
-    shared: true,
-    xDateFormat: '%A, %b %e, %Y %H:%M',
-    valueSuffix: ' kg',
+  legend: {
+    enabled: true
   },
   series: [
     {
-      name: 'Weight (kg)',
-      data: weightData.value.map((item: WeightData) => [new Date(item.date).getTime(), item.weightKg]),
-      type: chartType.value,
+      name: "Weight",
+      data: weightSeries.value,
+      lineWidth: 3,
       marker: {
-        enabled: true,
-        radius: 3
-      },
-      lineWidth: 2,
-    },
-  ],
-  credits: { enabled: false },
-  legend: { enabled: true },
-});
-
-const seriesData = computed(() => {
-  props.weightData
-      .map((item: WeightData) => {
-        return [new Date(item.date).getTime(), item.weightKg]
-            .sort((a: any, b: any) => a[0] - b[0])
-      })
-});
-
-// Reference for the Highcharts component instance (optional)
-const highchartsRef = ref<InstanceType<typeof HighchartsVue> | null>(null);
-
-// Watch for chart type changes to update chart options
-watch(chartType, (newType: 'line' | 'column' | 'area') => {
-  chartOptions.value.chart!.type = newType;
-  if (chartOptions.value.series && chartOptions.value.series[0]) {
-    chartOptions.value.series[0].type = newType;
-  }
-});
-
-// Watch for data changes and update points
-watch(seriesData, (newData: Array<[number, number]>) => {
-  if(chartOptions.value.series && chartOptions.value.series[0]) {
-    chartOptions.value.series[0].data = newData;
-  }
-});
+        radius: 4,
+        sumbol: "circle"
+      }
+    }
+  ]
+}))
 </script>
 
 <template>
-  <highcharts :options="chartoptions" v-if="viewMode === 'chart'" ref="highchartsRef"/>
+  <div>
+    <h2 class="text-2xl font-bold mb-4 text-gray-800">Weight Chart</h2>
+    <div class="text-center my-6" v-if="loading">Loading...</div>
+    <div class="text-red-600" v-if="error">{{ error }}</div>
+    <Highcharts
+      v-if="!loading && weightData.length"
+      :options="chartOptions"
+      class="rounded-xl shadow bg-white p-4"
+    />
+  </div>
 </template>
 
 <style scoped>
