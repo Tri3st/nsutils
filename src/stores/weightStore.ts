@@ -5,7 +5,7 @@ import type { WeightMeasurement, FetchParams } from '@/types/weight';
 
 interface PaginationResponse {
     count: number;
-    num_pages: number;
+    total_pages: number;
     page: number;
     page_size: number;
     results: WeightMeasurement[];
@@ -69,7 +69,7 @@ export const useWeightStore = defineStore('weightStore', () => {
         weightData.value = data.results;
 
         totalItems.value = data.count;
-        totalPages.value = data.num_pages;
+        totalPages.value = data.total_pages;
         currentPage.value = data.page;
         pageSize.value = data.page_size;
 
