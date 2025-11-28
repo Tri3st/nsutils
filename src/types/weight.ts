@@ -1,12 +1,11 @@
 export interface WeightData {
     date: string;
-    weightKg: number;
-    boneMass: number;
-    bodyFat: number;
-    bodyWater: number;
-    muscleMass: number;
+    weight_kg: number;
+    bone_mass: number;
+    body_fat: number;
+    body_water: number;
+    muscle_mass: number;
     bmi: number;
-    user: string;
 }
 
 export interface WeightMeasurement extends WeightData{
@@ -20,6 +19,8 @@ export interface WeightState {
 }
 
 export interface FetchParams {
+  page?: number;
+  page_size?: number;
   date_gte?: string
   date_lte?: string
   ordering?: string

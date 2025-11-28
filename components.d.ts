@@ -13,11 +13,11 @@ declare module 'vue' {
   export interface GlobalComponents {
     AboutMe: typeof import('./src/components/pages/AboutMe.vue')['default']
     AButton: typeof import('ant-design-vue/es')['Button']
-    ADropdown: typeof import('ant-design-vue/es')['Dropdown']
+    ACard: typeof import('ant-design-vue/es')['Card']
     ALayoutHeader: typeof import('ant-design-vue/es')['LayoutHeader']
-    AMenu: typeof import('ant-design-vue/es')['Menu']
-    AMenuItem: typeof import('ant-design-vue/es')['MenuItem']
-    ATooltip: typeof import('ant-design-vue/es')['Tooltip']
+    ARadioButton: typeof import('ant-design-vue/es')['RadioButton']
+    ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
+    ATable: typeof import('ant-design-vue/es')['Table']
     ConvertRaw: typeof import('./src/components/pages/NSUtilities/ConvertRaw.vue')['default']
     DropDownComponent: typeof import('./src/components/UI/DropDownComponent.vue')['default']
     Footer: typeof import('./src/components/Footer.vue')['default']
@@ -27,7 +27,7 @@ declare module 'vue' {
     LoginPage: typeof import('./src/components/pages/LoginPage.vue')['default']
     Logout: typeof import('./src/components/pages/Logout.vue')['default']
     MyHealth: typeof import('./src/components/pages/MyHealth.vue')['default']
-    NavButton: typeof import('./src/components/UI/navButton.vue')['default']
+    NavButton: typeof import('./src/components/UI/NavButton.vue')['default']
     NSUtilities: typeof import('./src/components/pages/NSUtilities.vue')['default']
     NSUtilitiesPage: typeof import('./src/components/pages/NSUtilitiesPage.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
@@ -36,5 +36,6 @@ declare module 'vue' {
     UploadXML: typeof import('./src/components/pages/NSUtilities/UploadXML.vue')['default']
     UserManager: typeof import('./src/components/pages/NSUtilities/UserManager.vue')['default']
     ViewUploads: typeof import('./src/components/pages/NSUtilities/ViewUploads.vue')['default']
+    WeightChart: typeof import('./src/components/pages/WeightChart.vue')['default']
   }
 }

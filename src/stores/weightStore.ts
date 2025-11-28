@@ -3,6 +3,14 @@ import { ref } from 'vue'
 import { api } from '@/api';
 import type { WeightMeasurement, FetchParams } from '@/types/weight';
 
+interface PaginationResponse {
+    count: number;
+    num_pages: number;
+    page: number;
+    page_size: number;
+    results: WeightMeasurement[];
+}
+
 export const useWeightStore = defineStore('weightStore', () => {
     
     // State
@@ -10,10 +18,17 @@ export const useWeightStore = defineStore('weightStore', () => {
     const loading = ref(false);
     const error = ref<string | null>(null);
 
+    // Pagination metadata
+    const totalItems = ref<number>(0);
+    const totalPages = ref<number>(0);
+    const currentPage = ref<number>(1);
+    const pageSize = ref<number>(12);
+
     // Actions
     async function fetchWeightData(params: FetchParams = {}) {
       loading.value = true
       error.value = null
+
       try {
         // Build query string params
         const queryParams = new URLSearchParams()
@@ -21,14 +36,24 @@ export const useWeightStore = defineStore('weightStore', () => {
         if (params.date_lte) queryParams.append('date__lte', params.date_lte)
         if (params.ordering) queryParams.append('ordering', params.ordering)
 
+        if (params.page) queryParams.append('page', params.page.toString())
+        if (params.page_size) queryParams.append('page_size', params.page_size.toString())
+
         const queryString = queryParams.toString()
 
-        const url = `/api/weight_data/` + (queryString ? `?${queryString}` : '')
+        const url = `/weight-data/` + (queryString ? `?${queryString}` : '')
 
         // Make authenticated request (adjust axios config as needed for auth)
-        const response = await api.get<WeightMeasurement[]>(url, { withCredentials: true })
+        const response = await api.get<PaginationResponse>(url, { withCredentials: true })
+        const data = response.data;
 
-        weightData.value = response.data
+        weightData.value = data.results;
+
+        totalItems.value = data.count;
+        totalPages.value = data.num_pages;
+        currentPage.value = data.page;
+        pageSize.value = data.page_size;
+
       } catch (err: any) {
         error.value = err.response?.data?.detail || err.message || 'Failed to load weight data'
       } finally {
@@ -41,5 +66,9 @@ export const useWeightStore = defineStore('weightStore', () => {
       loading,
       error,
       fetchWeightData,
+      totalItems,
+      totalPages,
+      currentPage,
+      pageSize,
     }
 });

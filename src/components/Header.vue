@@ -8,13 +8,15 @@ const authStore = useAuthStore();
 </script>
 
 <template>
-  <a-layout-header class="flex items-center bg-black/40 px-6 backdrop-blur sticky top-0">
+  <a-layout-header class="flex items-center bg-black/40 px-6 backdrop-blur sticky top-0 z-50 h-16">
 
     <!-- LEFT: Logo -->
-    <div class="flex-1 flex items-center bg-black/40 px-6 backdrop-blur sticky top-0">
+    <div
+        class="flex items-center flex-shrink-0 mr-6 cursor-pointer "
+        @click="router.push('/')"
+    >
       <div
-          class="text-xl font-bold text-purple-700 cursor-pointer mr-4"
-          @click="router.push('/')"
+          class="text-xl font-bold text-purple-700"
       >
         Martin's Home
       </div>
