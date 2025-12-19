@@ -8,23 +8,18 @@ const authStore = useAuthStore();
 </script>
 
 <template>
-  <a-layout-header class="flex items-center bg-black/40 px-6 backdrop-blur sticky top-0 z-50 h-16">
+  <a-layout-header class="bg-neutral-950/80 border-b border-neutral-800 backdrop-blur sticky top-0 z-50 h-16">
 
     <!-- LEFT: Logo -->
     <div
-        class="flex items-center flex-shrink-0 mr-6 cursor-pointer "
+        class="text-lg font-semibold tracking-wide cursor-pointer text-indigo-400 hover:text-indigo-300 transition"
         @click="router.push('/')"
     >
-      <div
-          class="text-xl font-bold text-purple-700"
-      >
-        Martin's Home
-      </div>
+        Martin.dev
     </div>
 
     <!-- CENTER -->
-    <div class="flex-1 flex justify-center items-center space-x-6">
-
+    <div class="flex items-center gap-3">
       <!-- Public nav -->
       <NavButton url="/" text="Home" type="normal"/>
       <NavButton url="/aboutme" text="About Me" type="normal"/>
@@ -42,14 +37,9 @@ const authStore = useAuthStore();
       </template>
 
       <!-- RIGHT | User info -->
-      <div class="flex-1 flex items-center justify-end space-x-4">
+      <div class="flex items-center gap-3">
         <!-- Crown if admin -->
-        <div
-            v-if="authStore.isAdmin"
-            class="w-8 h-8 bg-yellow-300 mr-2"
-            style="mask: url('/crown.svg') no-repeat center; mask-size: contain;"></div>
-
-      </div>
+        <span class="text-yellow-400 text-lg leading-none" v-if="authStore.isAdmin">👑</span>
 
       <!-- User AVATAR if authenticated -->
       <NavButton
@@ -71,7 +61,7 @@ const authStore = useAuthStore();
           url="/login"
           text="Login"
           type="login"/>
-
+      </div>
     </div>
   </a-layout-header>
 </template>

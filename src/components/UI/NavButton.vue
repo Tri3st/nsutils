@@ -4,6 +4,9 @@ import { Props } from "@/types/buttons.ts";
 
 const props = defineProps<Props>();
 
+const buttonStyle = "h-9 px-4 flex items-center justify-center text-sm font-medium rounded-md"
+
+
 const typeClass = computed(() => {
   switch(props.type) {
     case 'login':
@@ -30,7 +33,7 @@ const typeClass = computed(() => {
       size="large"
       shape="circle"
       @click="navigate"
-      :class="[{ 'nav-button--active': isActive }, typeClass ]"
+      :class="[{ 'nav-button--active': isActive }, typeClass, buttonStyle ]"
       v-if="props.type === 'circle'"
   >{{ text }}</a-button>
     <a-button
@@ -38,7 +41,7 @@ const typeClass = computed(() => {
       type="primary"
       size="large"
       @click="navigate"
-      :class="[{ 'nav-button--active': isActive }, typeClass ]"
+      :class="[{ 'nav-button--active': isActive }, typeClass, buttonStyle ]"
       v-else
     >{{ text }}</a-button>
   </router-link
