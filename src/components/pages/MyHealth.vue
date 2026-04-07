@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import {ref, onMounted, watch} from 'vue';
+import {ref, onMounted, watch, storeToRefs } from 'vue';
 import type { WeightData } from '@/types/weight';
 import { useWeightStore } from '@/stores/weightStore';
-import {storeToRefs} from "pinia";
 import WeightChart from "@/components/pages/WeightChart.vue";
 
 const viewMode = ref<'table' | 'chart'>('table');
@@ -145,7 +144,7 @@ onMounted(() => {
                   Average Weight
                 </div>
                 <div class="text-xl font-semibold text-blue-600">
-                  {{ (weightData.reduce((acc, item) => acc + item.weight_kg, 0) / weightData.length).toFixed(1) }} kg
+                  {{ (weightData.reduce((acc: number, item: WeightData) => acc + item.weight_kg, 0) / weightData.length).toFixed(1) }} kg
                 </div>
               </div>
               <div class="p-4 border rounded bg-gray-50">
@@ -153,7 +152,7 @@ onMounted(() => {
                   Max Weight
                 </div>
                 <div class="text-xl font-semibold text-green-600">
-                  {{ weightData.reduce((acc, item) => Math.max(acc, item.weight_kg), 0) }} kg
+                  {{ weightData.reduce((acc: number, item: WeightData) => Math.max(acc, item.weight_kg), 0) }} kg
                 </div>
               </div>
               <div class="p-4 border rounded bg-gray-50">
@@ -161,7 +160,7 @@ onMounted(() => {
                   Min Weight
                 </div>
                 <div class="text-xl font-semibold text-red-600">
-                  {{ weightData.reduce((acc, item) => Math.min(acc, item.weight_kg), Infinity) }} kg
+                  {{ weightData.reduce((acc: number, item: WeightData) => Math.min(acc, item.weight_kg), Infinity) }} kg
                 </div>
               </div>
 
@@ -169,19 +168,19 @@ onMounted(() => {
               <div class="p-4 border rounded bg-gray-50">
                 <div class="text-gray-500">Average BMI</div>
                 <div class="text-xl font-semibold text-blue-600">
-                  {{ (weightData.reduce((acc, item) => acc + item.bmi, 0) / weightData.length).toFixed(1) }} kg
+                  {{ (weightData.reduce((acc: number, item: WeightData) => acc + item.bmi, 0) / weightData.length).toFixed(1) }} kg
                 </div>
               </div>
               <div class="p-4 border rounded bg-gray-50">
                 <div class="text-gray-500">Max BMI</div>
                 <div class="text-xl font-semibold text-green-600">
-                  {{ weightData.reduce((acc, item) => Math.max(acc, item.bmi), 0) }} kg
+                  {{ weightData.reduce((acc: number, item: WeightData) => Math.max(acc, item.bmi), 0) }} kg
                 </div>
               </div>
               <div class="p-4 border rounded bg-gray-50">
                 <div class="text-gray-500">Min BMI</div>
                 <div class="text-xl font-semibold text-red-600">
-                  {{ weightData.reduce((acc, item) => Math.min(acc, item.bmi), Infinity).toFixed(1) }} kg
+                  {{ weightData.reduce((acc: number, item: WeightData) => Math.min(acc, item.bmi), Infinity).toFixed(1) }} kg
                 </div>
               </div>
             </div>
