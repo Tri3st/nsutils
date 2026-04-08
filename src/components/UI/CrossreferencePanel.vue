@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useIdentityStore } from '@/stores/identityStore.ts'
+import type {
+  Application,
+  CrossReferenceCategory,
+  CrossReferenceEntry
+} from '@/types/identityChecker.ts'
 
-const props = defineProps({
-  application: { type: String, required: true },
-})
+const props = defineProps<{
+  application: Application,
+}>()
 
 const store = useIdentityStore();
 
@@ -15,10 +20,15 @@ const xrefError = computed(() => store.xrefErrors[props.application])
 const allLoaded = computed(() => store.allSourcesLoaded(props.application))
 
 // ── Local UI state ────────────────────────────────────────────────────────────
-const activeCategory = ref('in_all')
-const xrefSearch     = ref('')
+const activeCategory = ref<CrossReferenceCategory>('in_all')
+const xrefSearch     = ref<string>('')
 
-const categories = [
+interface Category {
+  key: CrossReferenceCategory;
+  label: string;
+}
+
+const CATEGORIES: Category[] = [
   { key: 'in_all',            label: 'In all 3' },
   { key: 'only_in_users',     label: 'Only in Users' },
   { key: 'only_in_mail_dist', label: 'Only in Mail Dist.' },
@@ -28,41 +38,45 @@ const categories = [
   { key: 'in_mail_and_ad',    label: 'Mail + AD' },
 ]
 
-const activeRows = computed(() => result.value?.[activeCategory.value] || [])
+const activeRows = computed<CrossReferenceEntry[]>(
+  () => result.value?.[activeCategory.value] ?? [],
+)
 
-const filteredActiveRows = computed(() => {
+const filteredActiveRows = computed<CrossReferenceEntry[]>(() => {
   const q = xrefSearch.value.toLowerCase()
   if (!q) return activeRows.value
-  return activeRows.value.filter(r =>
-      (r.username     || '').toLowerCase().includes(q) ||
-      (r.email        || '').toLowerCase().includes(q) ||
-      (r.display_name || '').toLowerCase().includes(q)
+  return activeRows.value.filter((r: CrossReferenceEntry) => 
+      (r.username     ?? '').toLowerCase().includes(q) ||
+      (r.email        ?? '').toLowerCase().includes(q) ||
+      (r.display_name ?? '').toLowerCase().includes(q)
   )
 })
 
-// ── CSV export ────────────────────────────────────────────────────────────────
-function exportCsv() {
+
+const CATEGORY_LABELS: Record<CrossReferenceCategory, string> = {
+  in_all:            'In all 3',
+  only_in_users:     'Only in Users',
+  only_in_mail_dist: 'Only in Mail Dist.',
+  only_in_ad_group:  'Only in AD Group',
+  in_users_and_mail: 'Users + Mail',
+  in_users_and_ad:   'Users + AD',
+  in_mail_and_ad:    'Mail + AD',
+}
+
+function exportCsv(): void {
   if (!result.value) return
 
-  const CATEGORY_LABELS = {
-    in_all:            'In all 3',
-    only_in_users:     'Only in Users',
-    only_in_mail_dist: 'Only in Mail Dist.',
-    only_in_ad_group:  'Only in AD Group',
-    in_users_and_mail: 'Users + Mail',
-    in_users_and_ad:   'Users + AD',
-    in_mail_and_ad:    'Mail + AD',
-  }
+  const rows: string[][] = [
+    ['username', 'display_name', 'email', 'department', 'in_users', 'in_mail_dist', 'in_ad_group', 'category']
+  ]
 
-  const rows = [['username', 'display_name', 'email', 'department', 'in_users', 'in_mail_dist', 'in_ad_group', 'category']]
-
-  for (const [key, label] of Object.entries(CATEGORY_LABELS)) {
-    for (const row of result.value[key] || []) {
+  for (const [key, label] of Object.entries(CATEGORY_LABELS) as [CrossReferenceCategory, string][]) {
+    for (const row of result.value[key] ?? []) {
       rows.push([
-        row.username     || '',
-        row.display_name || '',
-        row.email        || '',
-        row.department   || '',
+        row.username     ?? '',
+        row.display_name ?? '',
+        row.email        ?? '',
+        row.department   ?? '',
         row.in_users     ? '1' : '0',
         row.in_mail_dist ? '1' : '0',
         row.in_ad_group  ? '1' : '0',
